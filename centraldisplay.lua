@@ -66,6 +66,8 @@ local lastClock = 0
 local clockStr = ""
 local carName = property.getText("Car name")
 
+local carHasTow = false
+
 local xLim, yLim = 0, 0
 
 local sleepTicks = 0
@@ -74,7 +76,7 @@ local isSleeping = false
 function onTick()
     acc = input.getBool(1)
     exist = input.getBool(2)
-    towConnected = input.getBool(7) -- note that MC has NOT from the connection
+    towConnected = carHasTow and input.getBool(7) -- note that MC has NOT from the connection
 
     local press = input.getBool(3)
     touchX = input.getNumber(1)

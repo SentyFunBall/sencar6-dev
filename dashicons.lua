@@ -96,9 +96,7 @@ function onTick()
 
     if not isEv and (fuel/maxfuel < fuelwarn or temp > tempwarn) then
         warning = true
-    elseif isEv and (fuel < 0.1) then
-        warning = true
-    elseif not isEv and otherWarning then
+    elseif otherWarning then
         warning = true
     else
         warning = false

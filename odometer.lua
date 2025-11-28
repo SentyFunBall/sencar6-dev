@@ -53,6 +53,9 @@ local distance = 0
 local fuelEcon = 0
 local econSamples = {}
 
+local timeTotal = 0
+local timeTrip = 0
+
 local isEv = property.getBool("EV Mode (Do not change)")
 
 function onTick()
@@ -62,6 +65,16 @@ function onTick()
     local fuel = input.getNumber(2)
     local Unit = input.getBool(32)
 
+    -- When the script is reloaded, preserve the odometer and time values from external memory
+    local externalOdo = input.getNumber(3)
+    local externalTime = input.getNumber(4)
+    if odometer == 0 and externalOdo > 0 then
+        odometer = externalOdo
+    end
+    if timeTotal == 0 and externalTime > 0 then
+        timeTotal = externalTime
+    end
+
     if pulse then --get the starting fuel when the car turns on
         fuelStart = fuel -- or battery for ev
         distance = 0
@@ -69,14 +82,19 @@ function onTick()
         avgSpeed = 0
         speeds = {}
         econSamples = {}
+        timeTrip = 0
     end
 
-    if eng and ticks % 30 == 0 and speed > 0.2 then
-        local deltaDist = speed / 2 -- m per 0.5s
-        odometer = odometer + deltaDist
-        distance = distance + deltaDist
-        speeds[#speeds + 1] = speed
-        if #speeds > 240 then table.remove(speeds, 1) end -- 2min window
+    if eng and ticks % 30 == 0 then
+        timeTotal = timeTotal + 0.5
+        timeTrip = timeTrip + 0.5
+        if speed > 0.2 then
+            local deltaDist = speed / 2 -- m per 0.5s
+            odometer = odometer + deltaDist
+            distance = distance + deltaDist
+            speeds[#speeds + 1] = speed
+            if #speeds > 240 then table.remove(speeds, 1) end -- 2min window
+        end
     end
 
 
@@ -115,14 +133,14 @@ function onTick()
 
     ticks = ticks + 1
 
-    if Unit then --miles
+    if Unit then                      --miles
         output.setNumber(1, odometer / 1609)
         output.setNumber(2, fuelEcon) -- swatts/mi
         output.setNumber(3, avgSpeed * 2.23)
         if isEv then
             output.setNumber(4, fuelUsed * 100 / maxBattery) --battery used in %
         else
-            output.setNumber(4, fuelUsed/3.78)
+            output.setNumber(4, fuelUsed / 3.78)
         end
         output.setNumber(5, distance / 1609)
     else --km
@@ -130,11 +148,27 @@ function onTick()
         output.setNumber(3, avgSpeed * 3.6)
         if isEv then
             output.setNumber(4, fuelUsed * 100 / maxBattery) --battery used in %
-            output.setNumber(2, fuelEcon * 100) -- swatts/100km
+            output.setNumber(2, fuelEcon * 100)              -- swatts/100km
         else
             output.setNumber(4, fuelUsed)
             output.setNumber(2, fuelEcon)
         end
         output.setNumber(5, distance / 1000)
+    end
+
+    output.setNumber(6, timeTotal)
+    output.setNumber(7, timeTrip)
+    output.setNumber(8, odometer)
+    
+    -- Set the external memreg to the odometer value for persistence only if > 0
+    if odometer > 0 then
+        output.setBool(1, true)
+    else
+        output.setBool(1, false)
+    end
+    if timeTotal > 0 then
+        output.setBool(2, true)
+    else
+        output.setBool(2, false)
     end
 end

@@ -39,5 +39,11 @@ MAR 20, 2023
 - Fix - Doors open display wouldn't update theme when manually changed
 
 ## v6.0
-Soon
 The full release notes for SenCar 6 can be found [here](./car6logfull.md)
+
+### v6.1
+- Feature - Hotkey 3 to flash high beams
+- Feature - Added new Total Time and Trip Time values to Info app to keep track of time the car has been on
+- Rework - Added check engine light when Extras MC is damaged
+- Rework - Odometer now preserves value when car gets reloaded
+- Fix - Extra options would incorrectly enable if the Extras micro was damaged on non-equipped car

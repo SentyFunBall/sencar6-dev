@@ -49,9 +49,9 @@ end
 -- try require("Folder.Filename") to include code from another file in this, so you can store code in libraries
 -- the "LifeBoatAPI" is included by default in /_build/libs/ - you can use require("LifeBoatAPI") to get this, and use all the LifeBoatAPI.<functions>!
 
-local SENCAR_VERSION = "6.0"
-local SENCAR_VERSION_BUILD = "1101251549f"
-local APP_VERSIONS = {MAP = "1020252157f", INFO = "1101251549f", WEATHER = "1020252157f", CAR = "1101251549f", SETTINGS = "1101251549f"}
+local SENCAR_VERSION = "6.1"
+local SENCAR_VERSION_BUILD = "1127252116f"
+local APP_VERSIONS = {MAP = "1020252157f", INFO = "1127252020f", WEATHER = "1020252157f", CAR = "1101251549f", SETTINGS = "1101251549f"}
 
 local theme = { { 47, 51, 78 }, { 86, 67, 143 }, { 128, 95, 164 } }
 
@@ -75,6 +75,8 @@ function onTick()
     avsp = input.getNumber(6)
     fuelUsed = input.getNumber(7)
     dist = input.getNumber(8)
+    timeTotal = input.getNumber(9)
+    timeTrip = input.getNumber(10)
 
     touchX = input.getNumber(1)
     touchY = input.getNumber(2)
@@ -109,7 +111,7 @@ function onTick()
     end
 
     if app == 3 and not isSleeping then --info
-        maxScroll = showInfo and 260 or 140 --adjust max scroll if info button is on
+        maxScroll = showInfo and 296 or 176 --adjust max scroll if info button is on
         scrollPixels = math.min(scrollPixels, maxScroll - 64)
 
         --scroll
@@ -123,7 +125,7 @@ function onTick()
         end
 
         --show info button
-        if press == 2 and isPointInRectangle(14, 128 - scrollPixels, 80, 10) then showInfo = not showInfo end
+        if press == 2 and isPointInRectangle(14, 164 - scrollPixels, 80, 10) then showInfo = not showInfo end
     end
     output.setBool(1, scrollDown)
 end
@@ -138,42 +140,53 @@ function onDraw()
     local rcolor = theme[3]
     local tcolor = theme[1]
 
-    drawInfo(15, 16-scrollPixels, "Car name", carName, hcolor, rcolor, tcolor)
+    local rowHeight = 18
+    local startY = 16 - scrollPixels
+
+    drawInfo(15, startY + 0 * rowHeight, "Car name", carName, hcolor, rcolor, tcolor)
     if units then
-        drawInfo(15, 34-scrollPixels, "Distance Driven", ("%.1fmi"):format(odometer), hcolor, rcolor, tcolor)
-        drawInfo(15, 52 - scrollPixels, "Dist this trip", ("%.1fmi"):format(dist), hcolor, rcolor, tcolor)
-        drawInfo(15, 106-scrollPixels, "Average Speed", ("%.1fmph"):format(avsp), hcolor, rcolor, tcolor)
+        drawInfo(15, startY + 1 * rowHeight, "Distance Driven", ("%.1fmi"):format(odometer), hcolor, rcolor, tcolor)
+        drawInfo(15, startY + 2 * rowHeight, "Dist this trip", ("%.1fmi"):format(dist), hcolor, rcolor, tcolor)
+        drawInfo(15, startY + 5 * rowHeight, "Average Speed", ("%.1fmph"):format(avsp), hcolor, rcolor, tcolor)
+        drawInfo(15, startY + 6 * rowHeight, "Total Time",
+            ("%dh %dm"):format(math.floor(timeTotal / 3600), math.floor((timeTotal % 3600) / 60)), hcolor, rcolor, tcolor)
+        drawInfo(15, startY + 7 * rowHeight, "Trip Time",
+            ("%dh %dm"):format(math.floor(timeTrip / 3600), math.floor((timeTrip % 3600) / 60)), hcolor, rcolor, tcolor)
         if isEv then
-            drawInfo(15, 70-scrollPixels, "Efficiency", ("%.1fsw/mi"):format(econ), hcolor, rcolor, tcolor)
-            drawInfo(15, 88-scrollPixels, "Battery used", ("%.1f%%"):format(fuelUsed), hcolor, rcolor, tcolor)
+            drawInfo(15, startY + 3 * rowHeight, "Efficiency", ("%.1fsw/mi"):format(econ), hcolor, rcolor, tcolor)
+            drawInfo(15, startY + 4 * rowHeight, "Battery used", ("%.1f%%"):format(fuelUsed), hcolor, rcolor, tcolor)
         else
-            drawInfo(15, 70-scrollPixels, "Fuel Economy", ("%.1fmpg"):format(econ), hcolor, rcolor, tcolor)
-            drawInfo(15, 88-scrollPixels, "Fuel used", ("%.1fgal"):format(fuelUsed), hcolor, rcolor, tcolor)
+            drawInfo(15, startY + 3 * rowHeight, "Fuel Economy", ("%.1fmpg"):format(econ), hcolor, rcolor, tcolor)
+            drawInfo(15, startY + 4 * rowHeight, "Fuel used", ("%.1fgal"):format(fuelUsed), hcolor, rcolor, tcolor)
         end
     else
-        drawInfo(15, 34-scrollPixels, "Distance Driven", ("%.1fkm"):format(odometer), hcolor, rcolor, tcolor)
-        drawInfo(15, 52-scrollPixels, "Dist this trip", ("%.1fkm"):format(dist), hcolor, rcolor, tcolor)
-        drawInfo(15, 106 - scrollPixels, "Average Speed", ("%.1fkmh"):format(avsp), hcolor, rcolor, tcolor)
+        drawInfo(15, startY + 1 * rowHeight, "Distance Driven", ("%.1fkm"):format(odometer), hcolor, rcolor, tcolor)
+        drawInfo(15, startY + 2 * rowHeight, "Dist this trip", ("%.1fkm"):format(dist), hcolor, rcolor, tcolor)
+        drawInfo(15, startY + 5 * rowHeight, "Average Speed", ("%.1fkmh"):format(avsp), hcolor, rcolor, tcolor)
+        drawInfo(15, startY + 6 * rowHeight, "Total Time",
+            ("%dh %dm"):format(math.floor(timeTotal / 3600), math.floor((timeTotal % 3600) / 60)), hcolor, rcolor, tcolor)
+        drawInfo(15, startY + 7 * rowHeight, "Trip Time",
+            ("%dh %dm"):format(math.floor(timeTrip / 3600), math.floor((timeTrip % 3600) / 60)), hcolor, rcolor, tcolor)
         if isEv then
-            drawInfo(15, 70-scrollPixels, "Efficiency", ("%.1fsw/100km"):format(econ), hcolor, rcolor, tcolor)
-            drawInfo(15, 88-scrollPixels, "Battery used", ("%.1f%%"):format(fuelUsed), hcolor, rcolor, tcolor)
+            drawInfo(15, startY + 3 * rowHeight, "Efficiency", ("%.1fsw/100km"):format(econ), hcolor, rcolor, tcolor)
+            drawInfo(15, startY + 4 * rowHeight, "Battery used", ("%.1f%%"):format(fuelUsed), hcolor, rcolor, tcolor)
         else
-            drawInfo(15, 70-scrollPixels, "Fuel Economy", ("%.1fL/100km"):format(econ), hcolor, rcolor, tcolor)
-            drawInfo(15, 88-scrollPixels, "Fuel used", ("%.1fL"):format(fuelUsed), hcolor, rcolor, tcolor)
+            drawInfo(15, startY + 3 * rowHeight, "Fuel Economy", ("%.1fL/100km"):format(econ), hcolor, rcolor, tcolor)
+            drawInfo(15, startY + 4 * rowHeight, "Fuel used", ("%.1fL"):format(fuelUsed), hcolor, rcolor, tcolor)
         end
     end
 
     c(100, 100, 100)
-    screen.drawLine(15, 124-scrollPixels, 80, 124-scrollPixels)
-    drawFullToggle(15, 128-scrollPixels, showInfo, "Show OS info", rcolor, tcolor)
+    screen.drawLine(15, 160-scrollPixels, 80, 160-scrollPixels)
+    drawFullToggle(15, 164-scrollPixels, showInfo, "Show OS info", rcolor, tcolor)
     if showInfo then
-        drawInfo(15, 140-scrollPixels, "OS version", SENCAR_VERSION, hcolor, rcolor, tcolor)
-        drawInfo(15, 157-scrollPixels, "os build number", SENCAR_VERSION_BUILD, hcolor, rcolor, tcolor)
-        drawInfo(15, 174-scrollPixels, "map app build", APP_VERSIONS.MAP, hcolor, rcolor, tcolor)
-        drawInfo(15, 191-scrollPixels, "info app build", APP_VERSIONS.INFO, hcolor, rcolor, tcolor)
-        drawInfo(15, 208-scrollPixels, "wther app build", APP_VERSIONS.WEATHER, hcolor, rcolor, tcolor)
-        drawInfo(15, 225-scrollPixels, "car app build", APP_VERSIONS.CAR, hcolor, rcolor, tcolor)
-        drawInfo(15, 243-scrollPixels, "stting app build", APP_VERSIONS.SETTINGS, hcolor, rcolor, tcolor)
+        drawInfo(15, 176-scrollPixels, "OS version", SENCAR_VERSION, hcolor, rcolor, tcolor)
+        drawInfo(15, 193-scrollPixels, "os build number", SENCAR_VERSION_BUILD, hcolor, rcolor, tcolor)
+        drawInfo(15, 210-scrollPixels, "map app build", APP_VERSIONS.MAP, hcolor, rcolor, tcolor)
+        drawInfo(15, 227-scrollPixels, "info app build", APP_VERSIONS.INFO, hcolor, rcolor, tcolor)
+        drawInfo(15, 244-scrollPixels, "wther app build", APP_VERSIONS.WEATHER, hcolor, rcolor, tcolor)
+        drawInfo(15, 261-scrollPixels, "car app build", APP_VERSIONS.CAR, hcolor, rcolor, tcolor)
+        drawInfo(15, 279-scrollPixels, "stting app build", APP_VERSIONS.SETTINGS, hcolor, rcolor, tcolor)
     end
 
 ----------[[* CONTROLS OVERLAY *]]--
