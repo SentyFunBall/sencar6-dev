@@ -47,3 +47,7 @@ The full release notes for SenCar 6 can be found [here](./car6logfull.md)
 - Rework - Added check engine light when Extras MC is damaged
 - Rework - Odometer now preserves value when car gets reloaded
 - Fix - Extra options would incorrectly enable if the Extras micro was damaged on non-equipped car
+
+### v6.1.1
+- Feature - Added rear distance to reverse camera (If equipped)
+- Feature - Added charging indicator to dash (EV only) - Battery icon/percentage turns green

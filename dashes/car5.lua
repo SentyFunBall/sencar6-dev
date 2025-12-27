@@ -76,7 +76,11 @@ end
 
 if info.properties.ev then
     -- battery
-    c(150, 150, 150)
+    if not isCharging then
+        c(150, 150, 150)
+    else
+        c(120, 240, 120)
+    end
     screen.drawRect(1, 27, 5, 3)
     screen.drawRectF(7, 28, 1, 2)
 else
@@ -95,14 +99,25 @@ end
 
 --- drive modes
 c(theme[2][1], theme[2][2], theme[2][3])
-if info.drivemode == 1 then --eco
-    dst(43,2,"Eco")
-elseif info.drivemode == 2 then --sport
-    dst(39,2,"Sport")
-elseif info.drivemode == 3 then --tow
-    dst(43,2,"Tow")
-elseif info.drivemode == 4 then --dac
-    dst(43,2,"DAC")
+if info.gear ~= 1 then
+    if info.drivemode == 1 then     --eco
+        dst(43, 2, "Eco")
+    elseif info.drivemode == 2 then --sport
+        dst(39, 2, "Sport")
+    elseif info.drivemode == 3 then --tow
+        dst(43, 2, "Tow")
+    elseif info.drivemode == 4 then --dac
+        dst(43, 2, "DAC")
+    end
+else -- rear dist
+    if hasBackupSensor then
+        if rearDist < 2 then
+            c(200, 50, 50)
+        else
+            c(200, 200, 200)
+        end
+        dst(40, 2, string.format("%.1fm", rearDist))
+    end
 end
 
 -- dial that fills up

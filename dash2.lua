@@ -85,6 +85,8 @@ local compIndicatorOffset = 0
 local deg = 0
 local degStr = ""
 local oldDeg = 0
+local hasBackupSensor = true
+local rearOffset = 0.75
 
 local lastClock = 0
 local clockstr = ""
@@ -119,6 +121,9 @@ function onTick()
     info.drivemode = input.getNumber(9)
 
     useDimDisplay = input.getBool(6)
+    isCharging = input.getBool(30)
+
+    rearDist = input.getNumber(14) - rearOffset
 
     local clock = input.getNumber(13)
 

@@ -70,14 +70,16 @@ end
 -- the "LifeBoatAPI" is included by default in /_build/libs/ - you can use require("LifeBoatAPI") to get this, and use all the LifeBoatAPI.<functions>!
 
 local theme = { { 47, 51, 78 }, { 86, 67, 143 }, { 128, 95, 164 } }
-local info = {properties = {}}
+local info = { properties = {} }
 local fuelCollected = false
 local ticks = 0
 local mapZoom = 2
 
 local pi = math.pi
-local pi2 = pi*2
-local oneDeg = pi/180
+local pi2 = pi * 2
+local oneDeg = pi / 180
+local hasBackupSensor = true
+local rearOffset = 0.75
 
 local lastClock = 0
 local clockstr = ""
@@ -89,7 +91,7 @@ info.properties.downshift = property.getNumber("Downshift RPS")
 info.properties.topspeed = property.getNumber("Top Speed (m/s)")/100
 info.properties.ev = property.getBool("EV Mode (Do not change)")
 info.properties.trans = property.getBool("Transmission")
-info.properties.unit = property.getBool("Units")
+info.properties.unit = property.getBool("Units") --true for imperial
 
 local usingSenconnect = property.getBool("Enable SenConnect") --disables map rendering, in favor of SenConnect's map
 
@@ -105,7 +107,6 @@ function onTick()
     touchY = input.getNumber(11)
     local touch = input.getBool(2)
 
-    
     local clock = input.getNumber(13)
 
     if clock ~= lastClock then
@@ -133,7 +134,10 @@ function onTick()
     info.drivemode = input.getNumber(9)
 
     useDimDisplay = input.getBool(6)
-        
+    isCharging = input.getBool(30)
+
+    rearDist = input.getNumber(14) - rearOffset
+
     if not fuelCollected then
         ticks = ticks + 1
     end
