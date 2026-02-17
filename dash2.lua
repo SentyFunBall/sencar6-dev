@@ -108,6 +108,9 @@ function onTick()
     info.properties.unit = input.getBool(32)
     info.properties.trans = input.getBool(31) --peculiar property name
 
+    -- Script alive indicator
+    output.setNumber(1, math.random())
+
     if dashMode < 3 then return end
     --kill me
     info.speed = input.getNumber(1)

@@ -40,6 +40,7 @@ do
         simulator:setInputBool(1, not simulator:getIsToggled(1))
         simulator:setInputBool(2, not simulator:getIsToggled(2))
         simulator:setInputBool(3, not simulator:getIsToggled(3))
+        simulator:setInputBool(30, simulator:getIsToggled(4))
         simulator:setInputNumber(3, simulator:getSlider(1)) --clock
         simulator:setInputNumber(4, 4) --gradient resolution
     end;
@@ -61,7 +62,7 @@ local tick2 = 255
 local gradientResolution = 5
 local gradientStep = 0
 local appNames = {"Home", "Weather", "Map", "Info", "Car", "Settings", "SiBTaT+", "Camera"}
-local ver = "v6.1.1"
+local ver = "v6.2"
 local lastClock = 0
 local clockStr = ""
 local carName = property.getText("Car name")
@@ -86,6 +87,8 @@ function onTick()
     gradientResolution = clamp(input.getNumber(4), 1, 9)
 
     useDimDisplay = input.getBool(31)
+
+    scriptcrash = input.getBool(30)
 
     local enableSleep = not input.getBool(5) -- NOT because settings output is inverted (WHY)
 
@@ -173,6 +176,9 @@ function onTick()
 
     output.setNumber(3, app)
     oldapp = app
+
+    -- Script alive indicator
+    output.setNumber(5, math.random())
 end
 
 function onDraw()
@@ -367,8 +373,19 @@ function onDraw()
     
     -- dim display if needed
     if useDimDisplay then
-        c(0,0,0,180)
-        screen.drawRectF(0,0,96,64)
+        c(0, 0, 0, 180)
+        screen.drawRectF(0, 0, 96, 64)
+    end
+    
+    if scriptcrash then --very bad
+        c(200, 50, 50)
+        screen.drawRectF(5, 5, 86, 22)
+        screen.drawRectF(4, 6, 1, 20)
+        screen.drawRectF(91, 6, 1, 20)
+        screen.drawRectF(6, 4, 84, 1)
+        screen.drawRectF(6, 27, 84, 1)
+        c(255, 255, 255)
+        screen.drawTextBox(9, 6, 85, 21, "PULL OVER SAFELY Unable to drive. Lua crashed", 0, -1)
     end
 end
 

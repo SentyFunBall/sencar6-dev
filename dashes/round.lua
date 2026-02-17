@@ -14,10 +14,11 @@ if info.gear == 1 then
         dst(6, 4, tostring(spd), 2)
         c(200, 200, 200)
     else
-        dst(6, 4, tostring(info.speed * 3.6), 2)
+        local spd = math.floor(info.speed * 3.6)
+        dst(6, 4, tostring(spd), 2)
         c(200, 200, 200)
     end
-    if hasBackupSensor then
+    if hasBackupSensor and rearDist < 50 then
         if rearDist < 2 then
             c(200, 50, 50)
         else
@@ -53,9 +54,9 @@ if info.properties.unit then
     local spd = math.floor(info.speed * 2.23694)
     dst(spd < 10 and 47 or spd < 100 and 45 or 43, 6, tostring(spd))
 else
-    dst(43, 26, "km/h")
+    dst(43, 13, "kmh")
     local spd = math.floor(info.speed * 3.6)
-    dst(spd < 10 and 47 or spd < 100 and 45 or 43, 19, tostring(spd))
+    dst(spd < 10 and 47 or spd < 100 and 45 or 43, 6, tostring(spd))
 end
 dst(info.properties.ev and 75 or 73, 11, info.properties.ev and "kW" or "RPS")
 

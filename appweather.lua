@@ -117,11 +117,11 @@ function onTick()
 
         -- Determine precipitation type and intensity
         local isSnow = temp < 5
-        if rain < 0.05 then 
-            rain = "None" 
-        elseif rain < 0.3 then 
+        if rain < 0.05 then
+            rain = "None"
+        elseif rain < 0.3 then
             rain = isSnow and "Flurries" or "Light"
-        elseif rain < 0.7 then 
+        elseif rain < 0.7 then
             rain = isSnow and "Heavy snow" or "Moderate"
         else
             rain = isSnow and "Snow storm" or "Heavy"
@@ -136,20 +136,20 @@ function onTick()
 
         if isHeavyPrecip and fog > 0.5 then
             conditions = isSnow and "Blizzard" or "Stormy"
-            color = isSnow and {207, 207, 207} or {86, 88, 89}
+            color = isSnow and { 207, 207, 207 } or { 86, 88, 89 }
         elseif isAnyPrecip then
             conditions = isSnow and "Snowy" or "Rainy"
-            color = isSnow and {204, 206, 207} or {141, 151, 158}
+            color = isSnow and { 204, 206, 207 } or { 141, 151, 158 }
         elseif isFoggy then
             if isDenselyFoggy then
                 conditions = isSnow and "Freezing dense fog" or "Dense fog"
-                color = isSnow and {106, 119, 125} or {90, 110, 120}
+                color = isSnow and { 106, 119, 125 } or { 90, 110, 120 }
             else
                 conditions = isSnow and "Freezing fog" or "Foggy"
-                color = isSnow and {106, 119, 125} or {90, 110, 120}
+                color = isSnow and { 106, 119, 125 } or { 90, 110, 120 }
             end
         elseif isSnow then
-            conditions, color = "Freezing", {165, 242, 243}
+            conditions, color = "Freezing", { 165, 242, 243 }
         else
             conditions = isDay and "Sunny" or "Clear"
             color = isDay and { 133, 197, 230 } or { 2, 0, 28 }
@@ -158,6 +158,9 @@ function onTick()
         -- Format temperature
         temp = units and string.format("%.0f*f", temp * 1.8 + 32) or string.format("%.0f*c", temp)
     end
+
+    -- Script alive indicator
+    output.setNumber(1, math.random())
 end
 
 function onDraw()

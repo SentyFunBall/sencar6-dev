@@ -171,4 +171,7 @@ function onTick()
     else
         output.setBool(2, false)
     end
+
+    -- Script alive indicator
+    output.setNumber(9, math.random())
 end

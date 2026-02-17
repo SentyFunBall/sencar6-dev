@@ -112,7 +112,8 @@ function onTick()
     if clock ~= lastClock then
         lastClock = clock
         if input.getBool(32) then
-            clockstr = ("%02d"):format(math.floor(clock * 24) % 12) .. ":" .. ("%02d"):format(math.floor((clock * 1440) % 60))
+            clockstr = ("%02d"):format(math.floor(clock * 24) % 12) ..
+            ":" .. ("%02d"):format(math.floor((clock * 1440) % 60))
             if string.sub(clockstr, 1, 2) == "00" then
                 clockstr = "12" .. string.sub(clockstr, 3, -1)
             end
@@ -120,6 +121,9 @@ function onTick()
             clockstr = ("%02d"):format(math.floor(clock * 24)) .. ":" .. ("%02d"):format(math.floor((clock * 1440) % 60))
         end
     end
+    
+    -- Script alive indicator
+    output.setNumber(1, math.random())
 
     if dashMode > 2 then return end
     --kill me

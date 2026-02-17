@@ -90,6 +90,7 @@ local actions = { --action {"name", state, type (0=toggle,1=dropdown,2=slider), 
     { "Auto sleep",     true,                                  0 },
     { "Pwr Bias (F/R)", 0,                                     2, { n = -1, m = 1, v = 0, s = 0.02 } },
     { "Max Power",      0,                                     2, { n = 0, m = 100, v = 100, s = 1 } },
+    { "Radar Offset",   0,                                     2, { n = -0.05, m = 0.05, v = 0, s = 0.00125 } },
 }
 local actionHeightOffsets = {}
 local total = 0
@@ -158,7 +159,7 @@ function onTick()
     end
 
     if app == 5 and not isSleeping then --die
-        maxScroll = 204 -- ~~adjust max scroll if dropdown is open~~ no longer needed, const
+        maxScroll = 226 -- ~~adjust max scroll if dropdown is open~~ no longer needed, const
         scrollPixels = math.min(scrollPixels, maxScroll - 64)
 
         --scroll
@@ -172,7 +173,7 @@ function onTick()
         end
 
         --action inputs
-        if not lock then
+        if not lock or touchY > 15 then -- Don't do anything if the car is locked or the touch is in the content area
             for i, action in pairs(actions) do
                 scrollable = 15 - scrollPixels + actionHeightOffsets[i]
                 local toggleScrollable = 15 - scrollPixels + actionHeightOffsets[i]
@@ -244,6 +245,7 @@ function onTick()
     output.setNumber(1, math.floor(9 - actions[7][4].v))
     output.setNumber(2, actions[12][4].v)
     output.setNumber(3, actions[13][4].v / 100)
+    output.setNumber(4, actions[14][4].v)
     channel = 24
     for i = 1, 3 do
         for j = 1, 3 do
@@ -251,6 +253,9 @@ function onTick()
             channel = channel + 1
         end
     end
+
+    -- Script alive indicator
+    output.setNumber(5, math.random())
 end
 
 function onDraw()

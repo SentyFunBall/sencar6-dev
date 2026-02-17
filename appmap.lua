@@ -106,7 +106,7 @@ function onTick()
         end
     end
 
-    if app == 2 and not isSleeping then --maps
+    if app == 2 and not isSleeping and touchY > 15 then --maps
         if press > 0 and isPointInRectangle(0, 18, 12, 12) then zoom = clamp(zoom - 0.01 - press/800, 0.3, 25) zoomin = true else zoomin = false end --zoomin
         if press > 0 and isPointInRectangle(0, 30, 12, 12) then zoom = clamp(zoom + 0.01 + press/800, 0.3, 25) zoomout = true else zoomout = false end --zoomout
         if press > 0 and isPointInRectangle(0, 42, 12, 12) then zoom = 3 mapX, mapY = 0,0 focus, resetbtn, movingMap = true, true, false else resetbtn = false end --reset
@@ -128,6 +128,9 @@ function onTick()
             mapX, mapY = x, y
         end
     end
+
+    -- Script alive indicator
+    output.setNumber(1, math.random())
 end
 
 function onDraw()

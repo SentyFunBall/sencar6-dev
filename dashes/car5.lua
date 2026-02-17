@@ -110,7 +110,7 @@ if info.gear ~= 1 then
         dst(43, 2, "DAC")
     end
 else -- rear dist
-    if hasBackupSensor then
+    if hasBackupSensor and rearDist < 50 then
         if rearDist < 2 then
             c(200, 50, 50)
         else

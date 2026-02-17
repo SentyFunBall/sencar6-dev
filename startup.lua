@@ -43,5 +43,8 @@ function onTick()
 	end
 
 	if shut and s then s = false end
-	output.setBool(1,s)
+    output.setBool(1, s)
+	
+	-- Script alive indicator
+    output.setNumber(1, math.random())
 end

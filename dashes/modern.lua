@@ -14,10 +14,11 @@ if info.gear == 1 then
         dst(6, 4, tostring(spd), 2)
         c(200, 200, 200)
     else
-        dst(6, 4, tostring(info.speed * 3.6), 2)
+        local spd = math.floor(info.speed * 3.6)
+        dst(6, 4, tostring(spd), 2)
         c(200, 200, 200)
     end
-    if hasBackupSensor then
+    if hasBackupSensor and rearDist < 50 then
         if rearDist < 2 then
             c(200, 50, 50)
         else

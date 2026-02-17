@@ -174,6 +174,9 @@ function onTick()
     if not exist and tick > 0 then
         tick = tick - 0.05
     end
+
+    -- Script alive indicator
+    output.setNumber(1, math.random())
 end
 
 function onDraw()

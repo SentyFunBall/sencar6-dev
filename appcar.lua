@@ -56,30 +56,24 @@ local sleepTicks = 0
 local isSleeping = false
 
 local actions = {
-    -- Doors & Access
-    { "Doors",        false },
-    { "Car Locks",    false },
+    { "AEB",          true },
     { "Auto Doors",   true },
-    { "Trunk",        false },
-    { "Front Trunk",  false },
+    { "Car Locks",    false },
     { "Charge Port",  false },
-
-    -- Interior & Comfort
-    { "Heater",       false },
-    { "Fold Seats",   false },
-    { "Sunroof",      false },
+    { "Creep",        false },
     { "Dome Light",   false },
+    { "Door Chime",   true },
+    { "Doors",        false },
+    { "Fold Seats",   false },
+    { "Front Trunk",  false },
+    { "Heater",       false },
+    { "Klaxon Large", false },
+    { "Megaphone",    false },
     { "Night Light",  false },
     { "Rave Mode",    false },
-
-    -- Audio & Effects
-    { "Megaphone",    false },
-    { "Klaxon Large", false },
-    { "Door Chime",   true },
-
-    -- Driving
-    { "Creep",        false },
-    { "AEB",          true },
+    { "RCW",          true },
+    { "Sunroof",      false },
+    { "Trunk",        false },
 }
 local maxScroll = #actions * 11 + 25
 
@@ -136,7 +130,7 @@ function onTick()
         end
 
         --PROCESSING
-        if not lock then
+        if not lock and touchY > 15 then
             for i = 1, #actions do
                 if press == 2 and isPointInRectangle(15, 15 - scrollPixels + i * 11, 80, 8) then
                     actions[i][2] = not actions[i][2]
@@ -149,9 +143,12 @@ function onTick()
         output.setBool(i + 3, actions[i][2])
     end
 
-    if actions[1][2] then -- for this car specifically
-        actions[1][2] = false
+    if actions[8][2] then -- for this car specifically
+        actions[8][2] = false
     end
+
+    -- Script alive indicator
+    output.setNumber(1, math.random())
 end
 
 function onDraw()

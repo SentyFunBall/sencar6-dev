@@ -51,3 +51,14 @@ The full release notes for SenCar 6 can be found [here](./car6logfull.md)
 ### v6.1.1
 - Feature - Added rear distance to reverse camera (If equipped)
 - Feature - Added charging indicator to dash (EV only) - Battery icon/percentage turns green
+
+### v6.2
+**Lua:**
+- Feature - Now monitors various scripts and microcontrollers and will display a warning if any script or controller encounters a fault
+- Rework - Rear distance only shows below 50 meters
+- Rework - Reorganized Car app options to be in alphabetical order
+- Fix - Fixed incorrectly allowing app touch inputs in the reserved screen areas
+- Fix - Fixed formatting issue with speed in metric in reverse in Modern and Round dash layout
+
+**Micro:**
+- Feature - Cruise Control speed adjustment/resuming. Hold CC button (2 by default) to resume previous cruise speed, use arrow keys to adjust speed while in cruise.

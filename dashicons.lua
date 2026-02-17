@@ -34,6 +34,7 @@ do
         simulator:setInputBool(9, true)
         simulator:setInputBool(10, simulator:getIsToggled(1))
         simulator:setInputBool(11, simulator:getIsToggled(2))
+        simulator:setInputBool(12, simulator:getIsToggled(3))
 
         simulator:setProperty("Dash Layout", 1) -- 1 - SenCar 6, 2 - SenCar 5, 3 - Round, 4 - Modern
     end;
@@ -73,6 +74,10 @@ function onTick()
     lightmode = input.getNumber(3)
     cruisemode = input.getNumber(4)
 
+    scriptcrash = input.getBool(12)
+
+    vehicleHold = input.getBool(13)
+
     lock = not input.getBool(3)
 
     --input theme
@@ -94,13 +99,16 @@ function onTick()
         ticks = 0
     end
 
-    if not isEv and (fuel/maxfuel < fuelwarn or temp > tempwarn) then
+    if not isEv and (fuel / maxfuel < fuelwarn or temp > tempwarn) then
         warning = true
     elseif otherWarning then
         warning = true
     else
         warning = false
     end
+    
+    -- Script alive indicator
+    output.setNumber(1, math.random())
 end
 
 function onDraw()
@@ -216,6 +224,25 @@ function onDraw()
         screen.drawRectF(46,2,1,2)
         screen.drawRectF(47,1,3,1)
         screen.drawRectF(50,2,1,3)
+    end
+
+    if scriptcrash then -- compact bottom-center alert
+        local bx, by, bw, bh = 44, 23, 9, 9 -- centered on 96x32
+
+        -- red rounded rectangle (pixel-rounded corners)
+        c(200, 50, 50)
+        screen.drawRectF(bx + 1, by, bw - 2, bh)
+        screen.drawRectF(bx, by + 1, 1, bh - 2)
+        screen.drawRectF(bx + bw - 1, by + 1, 1, bh - 2)
+
+        c(200, 200, 200)
+        screen.drawRectF(45,29,7,1)
+        screen.drawRectF(46,27,5,2)
+        screen.drawRectF(47,25,3,2)
+        screen.drawRectF(48,24,1,1)
+        c(200, 50, 50)
+        screen.drawRectF(48,25,1,2)
+        screen.drawRectF(48,28,1,1)
     end
 end
 

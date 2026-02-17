@@ -127,6 +127,9 @@ function onTick()
             ticks = ticks - 1
         end
     end
+
+    -- Script alive indicator
+    output.setNumber(1, math.random())
 end
 
 function onDraw()
