@@ -37,7 +37,8 @@ do
         simulator:setInputNumber(2, screenConnection.touchY)
 
         simulator:setInputBool(1, true)
-        simulator:setInputNumber(4, 0)
+        simulator:setInputNumber(4, 10)
+        simulator:setInputNumber(5, 20)
 
         simulator:setInputNumber(3, 2)
     end;
@@ -106,7 +107,7 @@ function onTick()
         end
     end
 
-    if app == 2 and not isSleeping and touchY > 15 then --maps
+    if app == 2 and not isSleeping then --maps
         if press > 0 and isPointInRectangle(0, 18, 12, 12) then zoom = clamp(zoom - 0.01 - press/800, 0.3, 25) zoomin = true else zoomin = false end --zoomin
         if press > 0 and isPointInRectangle(0, 30, 12, 12) then zoom = clamp(zoom + 0.01 + press/800, 0.3, 25) zoomout = true else zoomout = false end --zoomout
         if press > 0 and isPointInRectangle(0, 42, 12, 12) then zoom = 3 mapX, mapY = 0,0 focus, resetbtn, movingMap = true, true, false else resetbtn = false end --reset
