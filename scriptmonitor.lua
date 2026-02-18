@@ -107,7 +107,7 @@ function onTick()
         local value = input.getNumber(i)
         local old = lastValues[i] or 0
 
-        if value == old then -- If not changing, then things are bad
+        if i ~= numInputs and value == old then -- If not changing, then things are bad
             wdt = wdt + 1
             time_since_last_trigger = 0
 
@@ -116,6 +116,16 @@ function onTick()
                 triggers = triggers + 1
             end
         else
+            -- Exception for the last input, which is a constant number. If IT is changing, then things are bad
+            if i == numInputs and value ~= old then
+                wdt = wdt + 1
+                time_since_last_trigger = 0
+
+                if not active_issues[i] then
+                    active_issues[i] = true
+                    triggers = triggers + 1
+                end
+            end
             wdt = 0
             active_issues[i] = false
             time_since_last_trigger = time_since_last_trigger + 1
