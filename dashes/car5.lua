@@ -192,3 +192,11 @@ if useDimDisplay then
     screen.setColor(0, 0, 0, 150)
     screen.drawRectF(0, 0, 100, 32)
 end
+
+if info.gear ~= 1 then
+    --map zoom buttons
+    c(200, 200, 200)
+    screen.drawRectF(21, 24, 3, 1) --minus
+    screen.drawRectF(72, 23, 1, 3) --plus
+    screen.drawRectF(71, 24, 3, 1)
+end

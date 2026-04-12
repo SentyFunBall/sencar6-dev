@@ -73,7 +73,7 @@ local theme = { { 47, 51, 78 }, { 86, 67, 143 }, { 128, 95, 164 } }
 local info = { properties = {} }
 local fuelCollected = false
 local ticks = 0
-local mapZoom = 2
+local mapZoom, baseZoom, speedOffset = 2, 2, 0
 
 local pi = math.pi
 local pi2 = pi * 2
@@ -96,6 +96,8 @@ info.properties.unit = property.getBool("Units") --true for imperial
 local usingSenconnect = property.getBool("Enable SenConnect") --disables map rendering, in favor of SenConnect's map
 
 local dashMode = property.getNumber("Dash Layout")
+
+local lastX, lastY = 0, 0
 
 function onTick()
     acc = input.getBool(1)
@@ -153,31 +155,47 @@ function onTick()
 
     --map zoom
     if dashMode == 1 then
-        if touch and isPointInRectangle(26, 22, 5, 5) then
-            mapZoom = math.min(mapZoom + 0.1, 5)
-        elseif touch and isPointInRectangle(65, 22, 5, 5) then
-            mapZoom = math.max(mapZoom - 0.1, 0.5)
+        if touch and isPointInRectangle(23, 22, 5, 5) then
+            baseZoom = baseZoom + 0.1
+        elseif touch and isPointInRectangle(68, 22, 5, 5) then
+            baseZoom = baseZoom - 0.1
         end
     elseif dashMode == 2 then
-        if touch and isPointInRectangle(23, 26, 5, 5) then
-            mapZoom = math.min(mapZoom + 0.1, 5)
-        elseif touch and isPointInRectangle(67, 26, 5, 5) then
-            mapZoom = math.max(mapZoom - 0.1, 0.5)
+        if touch and isPointInRectangle(20, 26, 5, 5) then
+            baseZoom = baseZoom + 0.1
+        elseif touch and isPointInRectangle(70, 26, 5, 5) then
+            baseZoom = baseZoom - 0.1
         end
     end
 
-    mapZoom = mapZoom + (info.speed / info.properties.topspeed) * 0.1
-    
+    -- compute target offset from speed
+    local targetOffset = 0
+    if info.speed > 10 and exist then
+        targetOffset = info.speed / 30 -- tweak multiplier
+    end
+
+    -- smooth the offset (not the whole zoom)
+    local smoothFactor = 0.08
+    speedOffset = speedOffset + (targetOffset - speedOffset) * smoothFactor
+
+    -- final zoom = user choice + speed influence
+    mapZoom = baseZoom + speedOffset
+
+    mapZoom = clamp(mapZoom, 0.5, 5)
+    baseZoom = clamp(baseZoom, 0.5, 5)
+
     -- load from inputs
     for i = 1, 9 do
-        local row = math.ceil(i/3)
-        local col = (i-1)%3+1
-        local value = input.getNumber(i+23)
+        local row = math.ceil(i / 3)
+        local col = (i - 1) % 3 + 1
+        local value = input.getNumber(i + 23)
         if value ~= 0 then
             if not theme[row] then theme[row] = {} end
             theme[row][col] = value
         end
     end
+    
+    output.setNumber(2, mapZoom)
 end
 
 function onDraw()
@@ -246,11 +264,6 @@ end
 
 function isPointInRectangle(rectX, rectY, rectW, rectH)
 	return touchX > rectX and touchY > rectY and touchX < rectX+rectW and touchY < rectY+rectH
-end
-
-function gpsSpeed(x,y,lX,lY) -- function by GOM
-    s=(((x-lX)^2+(y-lY)^2)^0.5)
-    return s,x,y
 end
 
 function clamp(v, min, max)

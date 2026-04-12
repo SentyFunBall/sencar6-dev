@@ -120,6 +120,8 @@ local theme = _colors[defaultTheme]
 
 local lastIsNight = false
 
+local selectedTheme = defaultTheme
+
 function onTick()
     acc = input.getBool(1)
     app = input.getNumber(3)
@@ -195,6 +197,7 @@ function onTick()
                             beforeRainbow = j
                             actions[6][4].v = 0
                             open = false
+                            selectedTheme = j
                         end
                     end
                 elseif action[3] == 2 and press > 1 and not open then --slider
@@ -256,6 +259,7 @@ function onTick()
 
     -- Script alive indicator
     output.setNumber(5, math.random())
+    output.setNumber(6, selectedTheme)
 end
 
 function onDraw()

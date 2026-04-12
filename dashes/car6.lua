@@ -83,7 +83,6 @@ elseif info.gear >= 3 then
     end
 end
 
-
 -- fuel and temp bars
 c(100, 100, 100)
 screen.drawRectF(13, 30, 11, 1)
@@ -128,12 +127,12 @@ else
     screen.drawRectF(72, 30, tempPerc * 11, 1)
 end
 
-if not usingSenconnect and info.gear ~= 1 then
+if info.gear ~= 1 then
     --map zoom buttons
     c(200, 200, 200)
-    screen.drawRectF(27, 24, 3, 1) --minus
-    screen.drawRectF(67, 23, 1, 3) --plus
-    screen.drawRectF(66, 24, 3, 1)
+    screen.drawRectF(24, 24, 3, 1) --minus
+    screen.drawRectF(70, 23, 1, 3) --plus
+    screen.drawRectF(69, 24, 3, 1)
 end
 
 if useDimDisplay then
