@@ -1,7 +1,9 @@
+---@diagnostic disable: undefined-global
+---@diagnostic disable: undefined-field
 --appcar
 -- Author: SentyFunBall
 -- GitHub: https://github.com/SentyFunBall
--- Workshop: 
+-- Workshop:
 
 --Code by STCorp. Do not reuse.--
 --- Developed using LifeBoatAPI - Stormworks Lua plugin for VSCode - https://code.visualstudio.com/download (search "Stormworks Lua with LifeboatAPI" extension)
@@ -28,7 +30,6 @@ do
     ---@param simulator Simulator Use simulator:<function>() to set inputs etc.
     ---@param ticks     number Number of ticks since simulator started
     function onLBSimulatorTick(simulator, ticks)
-
         -- touchscreen defaults
         local screenConnection = simulator:getTouchScreen(1)
         simulator:setInputBool(3, screenConnection.isTouched)
@@ -107,9 +108,9 @@ function onTick()
 
     -- load from inputs
     for i = 1, 9 do
-        local row = math.ceil(i/3)
-        local col = (i-1)%3+1
-        local value = input.getNumber(i+23)
+        local row = math.ceil(i / 3)
+        local col = (i - 1) % 3 + 1
+        local value = input.getNumber(i + 23)
         if value ~= 0 then
             if not theme[row] then theme[row] = {} end
             theme[row][col] = value
@@ -153,39 +154,40 @@ end
 
 function onDraw()
     if not acc or app ~= 4 or isSleeping then return end
-----------[[* MAIN OVERLAY *]]--
+    ----------[[* MAIN OVERLAY *]]--
     c(70, 70, 70)
     screen.drawRectF(0, 0, 96, 64)
 
-    local hcolor = {theme[2][1]+25, theme[2][2]+25, theme[2][3]+25}
+    local hcolor = { theme[2][1] + 25, theme[2][2] + 25, theme[2][3] + 25 }
     local rcolor = theme[3]
     local tcolor = theme[1]
     c(table.unpack(hcolor))
-    screen.drawText(15,16-scrollPixels, "Car options")
-    c(100,100,100)
-    screen.drawLine(15,23-scrollPixels,80,23-scrollPixels)
+    screen.drawText(15, 16 - scrollPixels, "Car options")
+    c(100, 100, 100)
+    screen.drawLine(15, 23 - scrollPixels, 80, 23 - scrollPixels)
 
     --draw the boxes procedually
-    for i=1, #actions do
-        drawFullToggle(15, 15-scrollPixels+i*11, actions[i][2], actions[i][1], rcolor, tcolor)
+    for i = 1, #actions do
+        drawFullToggle(15, 15 - scrollPixels + i * 11, actions[i][2], actions[i][1], rcolor, tcolor)
     end
 
-----------[[* CONTROLS OVERLAY *]]--
+    ----------[[* CONTROLS OVERLAY *]]--
     c(theme[1][1], theme[1][2], theme[1][3], 250)
     screen.drawRectF(0, 15, 13, 64)
 
-    if zoomin then c(150,150,150) else c(170, 170, 170)end
+    if zoomin then c(150, 150, 150) else c(170, 170, 170) end
     drawRoundedRect(1, 19, 10, 18)
-    if zoomout then c(150,150,150) else c(170, 170, 170)end
+    if zoomout then c(150, 150, 150) else c(170, 170, 170) end
     drawRoundedRect(1, 40, 10, 18)
-    c(100,100,100)
+    c(100, 100, 100)
     screen.drawTriangleF(3, 29, 6, 25, 10, 29)
     screen.drawTriangleF(2, 48, 6, 53, 11, 48)
 end
 
-function c(...) local _={...}
-    for i,v in pairs(_) do
-     _[i]=_[i]^2.2/255^2.2*_[i]
+function c(...)
+    local _ = { ... }
+    for i, v in pairs(_) do
+        _[i] = _[i] ^ 2.2 / 255 ^ 2.2 * _[i]
     end
     screen.setColor(table.unpack(_))
 end
@@ -195,54 +197,52 @@ function clamp(v, l, u)
 end
 
 function isPointInRectangle(rectX, rectY, rectW, rectH)
-	return touchX > rectX and touchY > rectY and touchX < rectX+rectW and touchY < rectY+rectH
+    return touchX > rectX and touchY > rectY and touchX < rectX + rectW and touchY < rectY + rectH
 end
 
 function drawInfo(x, y, header, text, hcolor, rcolor, tcolor) --function to draw some info with a header and a rounded rect
     c(table.unpack(hcolor))
     screen.drawText(x, y, header)
     c(table.unpack(rcolor))
-    drawRoundedRect(x, y+6, #text*5+2, 8)
+    drawRoundedRect(x, y + 6, #text * 5 + 2, 8)
     c(table.unpack(tcolor))
-    screen.drawText(x+2, y+8, text)
+    screen.drawText(x + 2, y + 8, text)
 end
 
 function drawRoundedRect(x, y, w, h)
-    screen.drawRectF(x+1, y+1, w-1, h-1) --body
-    screen.drawLine(x+2, y, x+w-1, y) --top
-    screen.drawLine(x, y+2, x, y+h-1) --left
-    screen.drawLine(x+w, y+2, x+w, y+h-1) --right
-    screen.drawLine(x+2, y+h, x+w-1, y+h) --bottom
+    screen.drawRectF(x + 1, y + 1, w - 1, h - 1) --body
+    screen.drawLine(x + 2, y, x + w - 1, y) --top
+    screen.drawLine(x, y + 2, x, y + h - 1) --left
+    screen.drawLine(x + w, y + 2, x + w, y + h - 1) --right
+    screen.drawLine(x + 2, y + h, x + w - 1, y + h) --bottom
 end
 
-
-function drawToggle(x,y,state)
+function drawToggle(x, y, state)
     if state then
-        c(100,200,100)
-        screen.drawLine(x+1, y, x+7, y)
-        screen.drawLine(x, y+1, x+6, y+1)
-        screen.drawLine(x+1, y+2, x+7, y+2)
-        c(200,200,200)
-        screen.drawLine(x+7, y, x+7, y+3)
-        screen.drawLine(x+6, y+1, x+9, y+1)
+        c(100, 200, 100)
+        screen.drawLine(x + 1, y, x + 7, y)
+        screen.drawLine(x, y + 1, x + 6, y + 1)
+        screen.drawLine(x + 1, y + 2, x + 7, y + 2)
+        c(200, 200, 200)
+        screen.drawLine(x + 7, y, x + 7, y + 3)
+        screen.drawLine(x + 6, y + 1, x + 9, y + 1)
     else
-        c(100,100,100)
-        screen.drawLine(x+2, y, x+8, y)
-        screen.drawLine(x+3, y+1, x+9, y+1)
-        screen.drawLine(x+2, y+2, x+8, y+2)
-        c(200,200,200)
-        screen.drawLine(x+1, y, x+1, y+3)
-        screen.drawLine(x, y+1, x+3, y+1)
+        c(100, 100, 100)
+        screen.drawLine(x + 2, y, x + 8, y)
+        screen.drawLine(x + 3, y + 1, x + 9, y + 1)
+        screen.drawLine(x + 2, y + 2, x + 8, y + 2)
+        c(200, 200, 200)
+        screen.drawLine(x + 1, y, x + 1, y + 3)
+        screen.drawLine(x, y + 1, x + 3, y + 1)
     end
-
 end
 
 function drawFullToggle(x, y, state, text, bgcolor, tcolor)
     c(table.unpack(bgcolor))
-    drawRoundedRect(x, y, #text*5+15, 8)
-    drawToggle(x+#text*5+5, y+3, state)
+    drawRoundedRect(x, y, #text * 5 + 15, 8)
+    drawToggle(x + #text * 5 + 5, y + 3, state)
     c(table.unpack(tcolor))
-    screen.drawText(x+2, y+2, text)
+    screen.drawText(x + 2, y + 2, text)
 end
 
 function clamp(value, lower, upper)

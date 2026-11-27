@@ -1,3 +1,5 @@
+---@diagnostic disable: undefined-global
+---@diagnostic disable: undefined-field
 --appsettings
 -- Author: SentyFunBall
 -- GitHub: https://github.com/SentyFunBall
@@ -49,13 +51,13 @@ end
 -- the "LifeBoatAPI" is included by default in /_build/libs/ - you can use require("LifeBoatAPI") to get this, and use all the LifeBoatAPI.<functions>!
 
 local _colors = {
-    { { 47, 51, 78 },  { 86, 67, 143 },  { 128, 95, 164 } }, --sencar 5 in the micro
-    { { 17, 15, 107 }, { 22, 121, 196 }, { 48, 208, 217 } }, --blue
-    { { 74, 27, 99 },  { 124, 42, 161 }, { 182, 29, 224 } }, --purple
-    { { 35, 54, 41 },  { 29, 87, 36 },   { 12, 133, 26 } },  --green
-    { { 69, 1, 10 },   { 122, 1, 1 },    { 160, 9, 9 } },    --TE red
+    { { 47, 51, 78 },  { 86, 67, 143 },  { 128, 95, 164 } },  --sencar 5 in the micro
+    { { 17, 15, 107 }, { 22, 121, 196 }, { 48, 208, 217 } },  --blue
+    { { 74, 27, 99 },  { 124, 42, 161 }, { 182, 29, 224 } },  --purple
+    { { 35, 54, 41 },  { 29, 87, 36 },   { 12, 133, 26 } },   --green
+    { { 69, 1, 10 },   { 122, 1, 1 },    { 160, 9, 9 } },     --TE red
     { { 38, 38, 38 },  { 92, 92, 92 },   { 140, 140, 140 } }, --grey
-    { { 92, 50, 1 },   { 158, 92, 16 },  { 201, 119, 24 } }  --orange
+    { { 92, 50, 1 },   { 158, 92, 16 },  { 201, 119, 24 } }   --orange
 }
 
 local scrollable = 0
@@ -77,15 +79,15 @@ local themes = {
 }
 
 local actions = { --action {"name", state, type (0=toggle,1=dropdown,2=slider), isShow, extra}
-    { "Metric",       false,                                 0 },
-    { "Manual",       false,                                 0 },
-    { "ESC Off",      false,                                 0 },
-    { "RGB Mode",     false,                                 0 },
-    { "Mp Mode",      false,                                 0 },
-    { "Hue adjust",   0,                                     2, { n = -180, m = 180, v = 0, s = 1 } },
-    { "Gradient Res", 0,                                     2, { n = 1, m = 9, v = 6, s = 0.1 } },
-    { "Theme",        0,                                     1, themes },
-    { "Dark Mode",    false,                                 0 },
+    { "Metric",         false,                                 0 },
+    { "Manual",         false,                                 0 },
+    { "ESC Off",        false,                                 0 },
+    { "RGB Mode",       false,                                 0 },
+    { "Mp Mode",        false,                                 0 },
+    { "Hue adjust",     0,                                     2, { n = -180, m = 180, v = 0, s = 1 } },
+    { "Gradient Res",   0,                                     2, { n = 1, m = 9, v = 6, s = 0.1 } },
+    { "Theme",          0,                                     1, themes },
+    { "Dark Mode",      false,                                 0 },
     { "SenConnect",     property.getBool("Enable SenConnect"), 0 },
     { "Auto sleep",     true,                                  0 },
     { "Pwr Bias (F/R)", 0,                                     2, { n = -1, m = 1, v = 0, s = 0.02 } },
@@ -161,7 +163,7 @@ function onTick()
     end
 
     if app == 5 and not isSleeping then --die
-        maxScroll = 226 -- ~~adjust max scroll if dropdown is open~~ no longer needed, const
+        maxScroll = 226                 -- ~~adjust max scroll if dropdown is open~~ no longer needed, const
         scrollPixels = math.min(scrollPixels, maxScroll - 64)
 
         --scroll
@@ -185,7 +187,7 @@ function onTick()
 
                 if action[3] == 0 and press == 1 and not open and isPointInRectangle(14, toggleScrollable, 80, 8) then --toggle
                     action[2] = not action[2]
-                elseif action[3] == 1 and press == 2 then                                                 --dropdown
+                elseif action[3] == 1 and press == 2 then                                                              --dropdown
                     if isPointInRectangle(14, scrollable, 80, 8) then
                         open = not open
                     end
@@ -278,11 +280,11 @@ function onDraw()
     -- first pass: draw all non-dropdown elements and closed dropdowns
     for i, action in pairs(actions) do
         scrollable = 15 - scrollPixels + actionHeightOffsets[i]
-        if action[3] == 0 then     --toggle
+        if action[3] == 0 then                  --toggle
             drawFullToggle(15, scrollable, action[2], action[1], theme[3], theme[1])
         elseif action[3] == 1 and not open then --dropdown (closed only)
             drawDropdown(15, scrollable, false, action[1], action[4], theme, theme[3], theme[1])
-        elseif action[3] == 2 then --slider
+        elseif action[3] == 2 then              --slider
             drawSlider(15, scrollable - 8, action[1], action[4].v, action[4].n, action[4].m, theme[3], theme[1])
         end
     end
@@ -308,8 +310,8 @@ function onDraw()
     screen.drawTriangleF(2, 48, 6, 53, 11, 48)
 end
 
-function c(...) 
-    _ = {...} 
+function c(...)
+    _ = { ... }
     for i, v in pairs(_) do
         _[i] = v ^ 2.2 / 255 ^ 2.2 * v
     end
@@ -406,10 +408,11 @@ function rgbToHsv(theme) --GUESS what this does
         max, min, d = math.max(r, g, b), math.min(r, g, b), math.max(r, g, b) - math.min(r, g, b)
         h, s, v = 0, (max == 0 and 0 or d / max), max
         if max ~= min then
-            h = (max == r and (g - b) / d + (g < b and 6 or 0)) or (max == g and (b - r) / d + 2) or (max == b and (r - g) / d + 4)
+            h = (max == r and (g - b) / d + (g < b and 6 or 0)) or (max == g and (b - r) / d + 2) or
+            (max == b and (r - g) / d + 4)
             h = h / 6
         end
-        converted[#converted+1] = {h, s, v}
+        converted[#converted + 1] = { h, s, v }
     end
     return converted
 end
@@ -422,9 +425,9 @@ function hsvToRgb(theme)
         p, q, t = v * (1 - s), v * (1 - f * s), v * (1 - (1 - f) * s)
         i = i % 6
         r, g, b = (i == 0 and v or i == 1 and q or i == 2 and p or i == 3 and p or i == 4 and t or v),
-                  (i == 0 and t or i == 1 and v or i == 2 and v or i == 3 and q or i == 4 and p or p),
-                  (i == 0 and p or i == 1 and p or i == 2 and t or i == 3 and v or i == 4 and v or q)
-        converted[#converted+1] = {r*255, g*255, b*255}
+            (i == 0 and t or i == 1 and v or i == 2 and v or i == 3 and q or i == 4 and p or p),
+            (i == 0 and p or i == 1 and p or i == 2 and t or i == 3 and v or i == 4 and v or q)
+        converted[#converted + 1] = { r * 255, g * 255, b * 255 }
     end
     return converted
 end

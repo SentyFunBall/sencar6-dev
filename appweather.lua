@@ -1,7 +1,9 @@
+---@diagnostic disable: undefined-global
+---@diagnostic disable: undefined-field
 --appmap
 -- Author: SentyFunBall
 -- GitHub: https://github.com/SentyFunBall
--- Workshop: 
+-- Workshop:
 
 --Code by STCorp. Do not reuse.--
 --- Developed using LifeBoatAPI - Stormworks Lua plugin for VSCode - https://code.visualstudio.com/download (search "Stormworks Lua with LifeboatAPI" extension)
@@ -27,7 +29,6 @@ do
     ---@param simulator Simulator Use simulator:<function>() to set inputs etc.
     ---@param ticks     number Number of ticks since simulator started
     function onLBSimulatorTick(simulator, ticks)
-
         -- touchscreen defaults
         local screenConnection = simulator:getTouchScreen(1)
         simulator:setInputBool(3, screenConnection.isTouched)
@@ -36,7 +37,7 @@ do
 
         simulator:setInputBool(1, true)
         simulator:setInputNumber(5, simulator:getSlider(1) - 0.5)
-        simulator:setInputNumber(10, simulator:getSlider(2)-0.5)
+        simulator:setInputNumber(10, simulator:getSlider(2) - 0.5)
 
         simulator:setInputNumber(3, 1)
     end;
@@ -53,7 +54,7 @@ local theme = { { 47, 51, 78 }, { 86, 67, 143 }, { 128, 95, 164 } }
 local scrollPixels = 0
 local conditions = "Sunny"
 local showInfo = false
-local color = {133, 197, 230}
+local color = { 133, 197, 230 }
 
 local sleepTicks = 0
 local isSleeping = false
@@ -92,9 +93,9 @@ function onTick()
 
     -- load from inputs
     for i = 1, 9 do
-        local row = math.ceil(i/3)
-        local col = (i-1)%3+1
-        local value = input.getNumber(i+23)
+        local row = math.ceil(i / 3)
+        local col = (i - 1) % 3 + 1
+        local value = input.getNumber(i + 23)
         if value ~= 0 then
             if not theme[row] then theme[row] = {} end
             theme[row][col] = value
@@ -165,62 +166,63 @@ end
 
 function onDraw()
     if not acc or app ~= 1 or isSleeping then return end
-----------[[* MAIN OVERLAY *]]--
+    ----------[[* MAIN OVERLAY *]]--
     c(table.unpack(color))
     screen.drawRectF(0, 0, 96, 64)
 
-    hcolor = {200, 200, 200}
-    rcolor = {150, 150, 150}
-    tcolor = {50, 50, 50}
+    hcolor = { 200, 200, 200 }
+    rcolor = { 150, 150, 150 }
+    tcolor = { 50, 50, 50 }
 
     c(table.unpack(hcolor))
-    screen.drawText(15, 16-scrollPixels, "Current weather")
-    c(100,100,100)
-    screen.drawLine(15,23-scrollPixels,80,23-scrollPixels)
-    drawInfo(15, 26-scrollPixels, "Conditions", conditions, hcolor, rcolor, tcolor)
-    drawInfo(15 ,43-scrollPixels, "Temperature", temp, hcolor, rcolor, tcolor)
-    drawInfo(15, 60-scrollPixels, "Rain", rain, hcolor, rcolor, tcolor)
-    drawInfo(15, 77-scrollPixels, "Fog", string.format("%.0f%%", fog*100), hcolor, rcolor, tcolor)
+    screen.drawText(15, 16 - scrollPixels, "Current weather")
+    c(100, 100, 100)
+    screen.drawLine(15, 23 - scrollPixels, 80, 23 - scrollPixels)
+    drawInfo(15, 26 - scrollPixels, "Conditions", conditions, hcolor, rcolor, tcolor)
+    drawInfo(15, 43 - scrollPixels, "Temperature", temp, hcolor, rcolor, tcolor)
+    drawInfo(15, 60 - scrollPixels, "Rain", rain, hcolor, rcolor, tcolor)
+    drawInfo(15, 77 - scrollPixels, "Fog", string.format("%.0f%%", fog * 100), hcolor, rcolor, tcolor)
 
-----------[[* CONTROLS OVERLAY *]]--
+    ----------[[* CONTROLS OVERLAY *]]--
     c(theme[1][1], theme[1][2], theme[1][3], 250)
     screen.drawRectF(0, 15, 13, 64)
 
-    if scrollUp then c(150,150,150) else c(170, 170, 170)end
+    if scrollUp then c(150, 150, 150) else c(170, 170, 170) end
     drawRoundedRect(1, 19, 10, 18)
-    if scrollDown then c(150,150,150) else c(170, 170, 170)end
+    if scrollDown then c(150, 150, 150) else c(170, 170, 170) end
     drawRoundedRect(1, 40, 10, 18)
-    c(100,100,100)
+    c(100, 100, 100)
     screen.drawTriangleF(3, 29, 6, 25, 10, 29)
     screen.drawTriangleF(2, 48, 6, 53, 11, 48)
 end
 
-function c(...) local _={...}
-    for i,v in pairs(_) do
-     _[i]=_[i]^2.2/255^2.2*_[i]
+function c(...)
+    local _ = { ... }
+    for i, v in pairs(_) do
+        _[i] = _[i] ^ 2.2 / 255 ^ 2.2 * _[i]
     end
     screen.setColor(table.unpack(_))
 end
 
 function isPointInRectangle(rectX, rectY, rectW, rectH)
-	return touchX > rectX and touchY > rectY and touchX < rectX+rectW and touchY < rectY+rectH
+    return touchX > rectX and touchY > rectY and touchX < rectX + rectW and touchY < rectY + rectH
 end
 
 function drawInfo(x, y, header, text, hcolor, rcolor, tcolor) --function to draw some info with a header and a rounded rect
     c(table.unpack(hcolor))
     screen.drawText(x, y, header)
     c(table.unpack(rcolor))
-    drawRoundedRect(x, y+6, #text*5+2, 8)
+    drawRoundedRect(x, y + 6, #text * 5 + 2, 8)
     c(table.unpack(tcolor))
-    screen.drawText(x+2, y+8, text)
+    screen.drawText(x + 2, y + 8, text)
 end
 
 function drawRoundedRect(x, y, w, h)
-    screen.drawRectF(x+1, y+1, w-1, h-1) --body
-    screen.drawLine(x+2, y, x+w-1, y) --top
-    screen.drawLine(x, y+2, x, y+h-1) --left
-    screen.drawLine(x+w, y+2, x+w, y+h-1) --right
-    screen.drawLine(x+2, y+h, x+w-1, y+h) --bottom
+    screen.drawRectF(x + 1, y + 1, w - 1, h - 1) --body
+    screen.drawLine(x + 2, y, x + w - 1, y) --top
+    screen.drawLine(x, y + 2, x, y + h - 1) --left
+    screen.drawLine(x + w, y + 2, x + w, y + h - 1) --right
+    screen.drawLine(x + 2, y + h, x + w - 1, y + h) --bottom
 end
 
 function clamp(value, lower, upper)

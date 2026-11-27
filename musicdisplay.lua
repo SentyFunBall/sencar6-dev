@@ -1,3 +1,5 @@
+---@diagnostic disable: undefined-global
+---@diagnostic disable: undefined-field
 --musicdisplay
 -- Author: SentyFunBall
 -- GitHub: https://github.com/SentyFunBall
@@ -27,7 +29,6 @@ do
     ---@param simulator Simulator Use simulator:<function>() to set inputs etc.
     ---@param ticks     number Number of ticks since simulator started
     function onLBSimulatorTick(simulator, ticks)
-
         -- touchscreen defaults
         local screenConnection = simulator:getTouchScreen(1)
         simulator:setInputNumber(1, 1)
@@ -73,9 +74,9 @@ function onTick()
 
     -- load from inputs
     for i = 1, 9 do
-        local row = math.ceil(i/3)
-        local col = (i-1)%3+1
-        local value = input.getNumber(i+23)
+        local row = math.ceil(i / 3)
+        local col = (i - 1) % 3 + 1
+        local value = input.getNumber(i + 23)
         if value ~= 0 then
             if not theme[row] then theme[row] = {} end
             theme[row][col] = value
@@ -99,9 +100,9 @@ function onTick()
     end
 
     if not isSleeping then
-    -- channel buttons
+        -- channel buttons
         chUp = isPressed and isPointInRectangle(input.getNumber(3), input.getNumber(4), 3, 19, 14, 10)
-        chDown = isPressed and isPointInRectangle(input.getNumber(3), input.getNumber(4), 16 ,19, 14, 10)
+        chDown = isPressed and isPointInRectangle(input.getNumber(3), input.getNumber(4), 16, 19, 14, 10)
     end
 
     output.setBool(1, chUp)
@@ -144,49 +145,49 @@ function onDraw()
     if connected then
         --background
         if not isPlayingMusic then
-            c(theme[1][1], theme[1][2], theme[1][3],250) --i love tables
-            screen.drawRectF(3,3,26,26)
-            screen.drawLine(4,2,28,2)
-            screen.drawLine(29,4,29,28)
-            screen.drawLine(4,29,28,29)
-            screen.drawLine(2,4,2,28)
+            c(theme[1][1], theme[1][2], theme[1][3], 250) --i love tables
+            screen.drawRectF(3, 3, 26, 26)
+            screen.drawLine(4, 2, 28, 2)
+            screen.drawLine(29, 4, 29, 28)
+            screen.drawLine(4, 29, 28, 29)
+            screen.drawLine(2, 4, 2, 28)
             ticks = 0
         else
-            c(theme[1][1], theme[1][2], lerp(theme[1][3], theme[1][3]+25, ticks/300), 250)
-            screen.drawRectF(3,3,26,26)
-            screen.drawLine(4,2,28,2)
-            screen.drawLine(29,4,29,28)
-            screen.drawLine(4,29,28,29)
-            screen.drawLine(2,4,2,28)
+            c(theme[1][1], theme[1][2], lerp(theme[1][3], theme[1][3] + 25, ticks / 300), 250)
+            screen.drawRectF(3, 3, 26, 26)
+            screen.drawLine(4, 2, 28, 2)
+            screen.drawLine(29, 4, 29, 28)
+            screen.drawLine(4, 29, 28, 29)
+            screen.drawLine(2, 4, 2, 28)
         end
 
         --- stupid button outlines
-        c(theme[1][1]+55, theme[1][2]+55, theme[1][3]+55, 250)
-        screen.drawLine(3,20,29,20)
-        screen.drawRectF(15,21,2,8)
+        c(theme[1][1] + 55, theme[1][2] + 55, theme[1][3] + 55, 250)
+        screen.drawLine(3, 20, 29, 20)
+        screen.drawRectF(15, 21, 2, 8)
 
-        screen.drawLine(16,28,26,28)
-        screen.drawLine(26,27,27,27)
-        screen.drawLine(27,26,28,26)
-        screen.drawLine(28,21,28,26)
+        screen.drawLine(16, 28, 26, 28)
+        screen.drawLine(26, 27, 27, 27)
+        screen.drawLine(27, 26, 28, 26)
+        screen.drawLine(28, 21, 28, 26)
 
-        screen.drawLine(6,28,15,28)
-        screen.drawLine(5,27,6,27)
-        screen.drawLine(4,26,5,26)
-        screen.drawLine(3,21,3,26)
-        
+        screen.drawLine(6, 28, 15, 28)
+        screen.drawLine(5, 27, 6, 27)
+        screen.drawLine(4, 26, 5, 26)
+        screen.drawLine(3, 21, 3, 26)
+
         --- text
         c(theme[2][1], theme[2][2], theme[2][3])
-        screen.drawText(4,4, "Ch:" .. channel)
+        screen.drawText(4, 4, "Ch:" .. channel)
 
         --- signal strength bars
         local bars = {
-            {4, 15, 4, 4},
-            {11, 13, 4, 6},
-            {18, 11, 4, 8},
-            {25, 9, 4, 10}
+            { 4,  15, 4, 4 },
+            { 11, 13, 4, 6 },
+            { 18, 11, 4, 8 },
+            { 25, 9,  4, 10 }
         }
-        
+
         if signalStrength <= 0 then
             for i = 1, 4 do
                 local x = bars[i][1]
@@ -195,11 +196,11 @@ function onDraw()
         else
             local filledBars = math.ceil(signalStrength * 4)
             local isWeak = signalStrength <= 0.3
-            
+
             if isWeak then
                 c(150, 50, 50)
             end
-            
+
             for i = 1, 4 do
                 local x, y, w, h = table.unpack(bars[i])
                 if i <= filledBars then
@@ -208,7 +209,7 @@ function onDraw()
                     screen.drawRect(x, y, w - 1, h - 1)
                 end
             end
-            
+
             if isWeak then
                 c(theme[2][1], theme[2][2], theme[2][3])
             end
@@ -217,48 +218,48 @@ function onDraw()
         --- up arrow
         if chup then
             c(theme[3][1], theme[3][2], theme[3][3])
-            screen.drawLine(9,22,9,27)
-            screen.drawLine(10,23,10,25)
-            screen.drawLine(8,23,8,25)
-            screen.drawRectF(11,24,1,1)
-            screen.drawRectF(7,24,1,1)
+            screen.drawLine(9, 22, 9, 27)
+            screen.drawLine(10, 23, 10, 25)
+            screen.drawLine(8, 23, 8, 25)
+            screen.drawRectF(11, 24, 1, 1)
+            screen.drawRectF(7, 24, 1, 1)
         else
             c(theme[2][1], theme[2][2], theme[2][3])
-            screen.drawLine(9,22,9,27)
-            screen.drawLine(10,23,10,25)
-            screen.drawLine(8,23,8,25)
-            screen.drawRectF(11,24,1,1)
-            screen.drawRectF(7,24,1,1)
+            screen.drawLine(9, 22, 9, 27)
+            screen.drawLine(10, 23, 10, 25)
+            screen.drawLine(8, 23, 8, 25)
+            screen.drawRectF(11, 24, 1, 1)
+            screen.drawRectF(7, 24, 1, 1)
         end
 
         --- down arrow
         if chdown then
             c(theme[3][1], theme[3][2], theme[3][3])
-            screen.drawLine(22,22,22,27)
-            screen.drawLine(23,24,23,26)
-            screen.drawLine(21,24,21,26)
-            screen.drawRectF(24,24,1,1)
-            screen.drawRectF(20,24,1,1)
+            screen.drawLine(22, 22, 22, 27)
+            screen.drawLine(23, 24, 23, 26)
+            screen.drawLine(21, 24, 21, 26)
+            screen.drawRectF(24, 24, 1, 1)
+            screen.drawRectF(20, 24, 1, 1)
         else
             c(theme[2][1], theme[2][2], theme[2][3])
-            screen.drawLine(22,22,22,27)
-            screen.drawLine(23,24,23,26)
-            screen.drawLine(21,24,21,26)
-            screen.drawRectF(24,24,1,1)
-            screen.drawRectF(20,24,1,1)
+            screen.drawLine(22, 22, 22, 27)
+            screen.drawLine(23, 24, 23, 26)
+            screen.drawLine(21, 24, 21, 26)
+            screen.drawRectF(24, 24, 1, 1)
+            screen.drawRectF(20, 24, 1, 1)
         end
     else
-        c(theme[1][1], theme[1][2], theme[1][3],250) --i love tables
-        screen.drawRectF(3,3,26,26)
-        screen.drawLine(4,2,28,2)
-        screen.drawLine(29,4,29,28)
-        screen.drawLine(4,29,28,29)
-        screen.drawLine(2,4,2,28)
+        c(theme[1][1], theme[1][2], theme[1][3], 250) --i love tables
+        screen.drawRectF(3, 3, 26, 26)
+        screen.drawLine(4, 2, 28, 2)
+        screen.drawLine(29, 4, 29, 28)
+        screen.drawLine(4, 29, 28, 29)
+        screen.drawLine(2, 4, 2, 28)
         screen.setColor(100, 100, 100)
         screen.drawTextBox(4, 4, 28, 28, "comp not connected")
     end
 
-    c(0,0,0,lerp(255, 1, tick))
+    c(0, 0, 0, lerp(255, 1, tick))
     screen.drawRectF(0, 0, 32, 32)
 
     if useDimDisplay then
@@ -267,15 +268,16 @@ function onDraw()
     end
 end
 
-function c(...) local _={...}
-    for i,v in pairs(_) do
-     _[i]=_[i]^2.2/255^2.2*_[i]
+function c(...)
+    local _ = { ... }
+    for i, v in pairs(_) do
+        _[i] = _[i] ^ 2.2 / 255 ^ 2.2 * _[i]
     end
     screen.setColor(table.unpack(_))
 end
 
-function lerp(v0,v1,t)
-    return v1*t+v0*(1-t)
+function lerp(v0, v1, t)
+    return v1 * t + v0 * (1 - t)
 end
 
 function isPointInRectangle(x, y, rectX, rectY, rectW, rectH)

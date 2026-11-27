@@ -1,6 +1,8 @@
+---@diagnostic disable: undefined-global
+---@diagnostic disable: undefined-field
 -- Author: SentyFunBall
 -- GitHub: https://github.com/SentyFunBall
--- Workshop: 
+-- Workshop:
 
 --Code by STCorp. Do not reuse.--
 --- Developed using LifeBoatAPI - Stormworks Lua plugin for VSCode - https://code.visualstudio.com/download (search "Stormworks Lua with LifeboatAPI" extension)
@@ -15,29 +17,29 @@ if (not usingSenconnect) and info.gear ~= 1 then
     screen.drawMap(info.gpsX, info.gpsY, mapZoom)
     --map icon
     c(theme[3][1], theme[3][2], theme[3][3])
-    drawPointer(48,16,info.compass, 5)
+    drawPointer(48, 16, info.compass, 5)
 end
 
 --side gradients
 c(theme[1][1], theme[1][2], theme[1][3], 250)
 screen.drawRectF(0, 22, 96, 10)
-for i=0, 28 do
-    c(theme[1][1], theme[1][2], theme[1][3], easeLerp(250, 50, i/28))
+for i = 0, 28 do
+    c(theme[1][1], theme[1][2], theme[1][3], easeLerp(250, 50, i / 28))
     screen.drawLine(i, 0, i, 32)
-    screen.drawLine(96-i, 0, 96-i, 32)
+    screen.drawLine(96 - i, 0, 96 - i, 32)
 end
 
 --- drive modes
 if info.gear ~= 1 then
     c(theme[2][1], theme[2][2], theme[2][3])
-    if info.drivemode == 1 then --eco
-        dst(43,2,"Eco")
+    if info.drivemode == 1 then     --eco
+        dst(43, 2, "Eco")
     elseif info.drivemode == 2 then --sport
-        dst(39,2,"Sport")
+        dst(39, 2, "Sport")
     elseif info.drivemode == 3 then --tow
-        dst(43,2,"Tow")
+        dst(43, 2, "Tow")
     elseif info.drivemode == 4 then --dac
-        dst(43,2,"DAC")
+        dst(43, 2, "DAC")
     end
 else -- rear dist
     if hasBackupSensor and rearDist < 50 then
@@ -57,7 +59,7 @@ if info.properties.unit then
     dst(spd < 10 and 15 or spd < 100 and 11 or 7, 5, tostring(spd), 2)
     c(100, 100, 100)
     dst(13, 16, "MPH", 1)
-else 
+else
     local spd = math.floor(info.speed * 3.6)
     dst(spd < 10 and 15 or spd < 100 and 11 or 7, 5, tostring(spd), 2)
     c(100, 100, 100)
@@ -65,21 +67,21 @@ else
 end
 
 -- gear
-c(200,200,200)
+c(200, 200, 200)
 if info.gear == 0 then
-    dst(88,24,"P",1)
+    dst(88, 24, "P", 1)
 elseif info.gear == 1 then
-    dst(88,24,"R",1)
+    dst(88, 24, "R", 1)
 elseif info.gear == 2 then
-    dst(88,24,"N",1)
+    dst(88, 24, "N", 1)
 elseif info.gear >= 3 then
     if info.properties.ev or info.properties.trans then
-        dst(info.properties.ev and 88 or 87, 24,"D",1)
+        dst(info.properties.ev and 88 or 86, 24, "D", 1)
         if not info.properties.ev and info.properties.trans then
-            dst(94,24,string.format("%.0f", info.gear-2))
+            dst(90, 24, string.format("%.0f", info.gear - 2))
         end
     else
-        dst(88,24,string.format("%.0f", info.gear-2),1)
+        dst(88, 24, string.format("%.0f", info.gear - 2), 1)
     end
 end
 
@@ -111,15 +113,28 @@ if info.properties.ev then
     screen.drawRectF(13, 30, battPerc * 11, 1)
 
     -- gen power bar
-    local genPerc = math.min(info.temp / 16, 1)            -- gen power production. 20 swatts/sec is probably max
+    local genPerc = math.min(info.temp / 16, 1) -- gen power production. 20 swatts/sec is probably max
     c(240, 240, 240)
     screen.drawRectF(72, 30, math.max(genPerc * 11 - 1, 0), 1)
-    
 else
+    -- fuel and temp bars
     info.fuel = clamp(info.fuel, 0, info.properties.maxfuel)
     local fuelPerc = info.fuel / info.properties.maxfuel
     c(240, 120 + (fuelPerc * 120), 120 + (fuelPerc * 120)) -- white full, red empty
     screen.drawRectF(13, 30, fuelPerc * 11, 1)
+
+    c(200, 200, 200)
+    -- fuel icon
+    screen.drawRectF(16, 27, 3, 2)
+    screen.drawRect(16, 24, 2, 2)
+    screen.drawLine(20, 25, 20, 29)
+    screen.drawRectF(19, 27, 1, 1)
+    screen.drawRectF(19, 24, 1, 1)
+    -- temp icon
+    screen.drawLine(75, 28, 80, 28)
+    screen.drawLine(77, 24, 77, 28)
+    screen.drawRectF(78, 24, 1, 1)
+    screen.drawRectF(78, 26, 1, 1)
 
     info.temp = clamp(info.temp, 0, 120)                   -- engines dont usually go past 120C
     local tempPerc = math.min(info.temp / info.properties.tempwarn, 1)

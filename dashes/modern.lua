@@ -1,6 +1,8 @@
+---@diagnostic disable: undefined-global
+---@diagnostic disable: undefined-field
 -- Author: SentyFunBall
 -- GitHub: https://github.com/SentyFunBall
--- Workshop: 
+-- Workshop:
 
 --Code by STCorp. Do not reuse.--
 --- Developed using LifeBoatAPI - Stormworks Lua plugin for VSCode - https://code.visualstudio.com/download (search "Stormworks Lua with LifeboatAPI" extension)
@@ -60,8 +62,8 @@ screen.drawRectF(0, 0, 96, 32)
 
 -- bars
 local speedColors = {
-    { 1, 207, 239 },
-    { 87, 0, 94 }
+    { 1,  207, 239 },
+    { 87, 0,   94 }
 }
 gradientLine(6, 16, 41, 16, speedColors[1], speedColors[2])
 c(20, 20, 20, 220)
@@ -71,7 +73,7 @@ gradientLine(6, 16, 41, 16, speedColors[1], speedColors[2], speedProgress, 35)
 
 local rpsColors = {
     { 255, 209, 102 },
-    { 94, 53, 1 }
+    { 94,  53,  1 }
 }
 gradientLine(55, 16, 90, 16, rpsColors[1], rpsColors[2])
 c(20, 20, 20, 220)
@@ -103,7 +105,7 @@ if info.properties.unit then
     dst(6, 4, tostring(spd), 2)
     c(200, 200, 200)
     dst(30, 9, "MPH", 1)
-else 
+else
     local spd = math.floor(info.speed * 3.6)
     dst(6, 4, tostring(spd), 2)
     c(200, 200, 200)
@@ -151,11 +153,11 @@ else
     if info.fuel / info.properties.maxfuel < info.properties.fuelwarn then
         c(150, 50, 50)
     end
-    screen.drawRectF(1,29,3,2)
-    screen.drawRect(1,26,2,2)
-    screen.drawLine(5,27,5,31)
-    screen.drawRectF(4,29,1,1)
-    screen.drawRectF(4,26,1,1)
+    screen.drawRectF(6, 24, 3, 2)
+    screen.drawRect(6, 21, 2, 2)
+    screen.drawLine(10, 22, 10, 26)
+    screen.drawRectF(9, 24, 1, 1)
+    screen.drawRectF(9, 21, 1, 1)
 
     c(0, 187, 62)
     screen.drawRectF(6, 28, (info.fuel / info.properties.maxfuel) * 35, 1)
@@ -174,12 +176,12 @@ dst(x + #degStr * 4 + 4, 22, dirStr)
 
 -- drive modes
 c(theme[2][1], theme[2][2], theme[2][3])
-if info.drivemode == 1 then --eco
-    dst(43,2,"Eco")
+if info.drivemode == 1 then     --eco
+    dst(43, 2, "Eco")
 elseif info.drivemode == 2 then --sport
-    dst(39,2,"Sport")
+    dst(39, 2, "Sport")
 elseif info.drivemode == 3 then --tow
-    dst(43,2,"Tow")
+    dst(43, 2, "Tow")
 elseif info.drivemode == 4 then --dac
-    dst(43,2,"DAC")
+    dst(43, 2, "DAC")
 end

@@ -1,3 +1,5 @@
+---@diagnostic disable: undefined-global
+---@diagnostic disable: undefined-field
 -- Author: SentyFunBall
 -- GitHub: https://github.com/SentyFunBall
 -- Workshop:
@@ -25,7 +27,6 @@ do
     ---@param simulator Simulator Use simulator:<function>() to set inputs etc.
     ---@param ticks     number Number of ticks since simulator started
     function onLBSimulatorTick(simulator, ticks)
-
         -- touchscreen defaults
         simulator:setInputBool(1, simulator:getIsToggled(1))
         simulator:setInputBool(2, not simulator:getIsToggled(1))
@@ -75,7 +76,7 @@ function onTick()
         timeTotal = externalTime
     end
 
-    if pulse then --get the starting fuel when the car turns on
+    if pulse then        --get the starting fuel when the car turns on
         fuelStart = fuel -- or battery for ev
         distance = 0
         fuelEcon = 0
@@ -115,15 +116,14 @@ function onTick()
             local sum = 0
             for i = 1, #econSamples do sum = sum + econSamples[i] end
             fuelEcon = sum / #econSamples
-            
         else
             fuelEcon = 0
         end
     else
-        if Unit then --mpg
-            fuelEcon =  (distance / 1609.34) / (fuelUsed / 3.785)--miles / gallon
-        else --l/100km
-            fuelEcon = distance/1000 / (fuelUsed*100) --idk blame nameous
+        if Unit then                                              --mpg
+            fuelEcon = (distance / 1609.34) / (fuelUsed / 3.785)  --miles / gallon
+        else                                                      --l/100km
+            fuelEcon = distance / 1000 / (fuelUsed * 100)         --idk blame nameous
         end
     end
 
@@ -159,7 +159,7 @@ function onTick()
     output.setNumber(6, timeTotal)
     output.setNumber(7, timeTrip)
     output.setNumber(8, odometer)
-    
+
     -- Set the external memreg to the odometer value for persistence only if > 0
     if odometer > 0 then
         output.setBool(1, true)

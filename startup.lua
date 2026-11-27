@@ -1,20 +1,22 @@
+---@diagnostic disable: undefined-global
+---@diagnostic disable: undefined-field
 --startup
 local s = false
 local ticks = 0
 local isEV = property.getBool("EV Mode (Do not change)")
 
--- This script was written for SenTOS Car 4, and I have no idea how it works. 
+-- This script was written for SenTOS Car 4, and I have no idea how it works.
 -- It doesn't sometimes, but it does most the time.
 function onTick()
 	local button = input.getBool(1)
 	local cap = input.getBool(2)
 	local shut = input.getBool(3)
 
-    local dashTouch = input.getBool(4) and not pulse
+	local dashTouch = input.getBool(4) and not pulse
 	pulse = input.getBool(4)
 
-    local seatOccupied = input.getBool(5)
-	
+	local seatOccupied = input.getBool(5)
+
 	local doAutoSleep = input.getBool(6)
 
 	if cap then
@@ -27,24 +29,24 @@ function onTick()
 		end
 	end
 
-	if isEV then
-		if not seatOccupied and s and doAutoSleep then
-			ticks = ticks + 1
-			if ticks > 1800 then -- turn off after 30 seconds
-				s = false
-			end
-		else
-			ticks = 0
+	--if isEV then
+	if not seatOccupied and s and doAutoSleep then
+		ticks = ticks + 1
+		if ticks > 1800 then -- turn off after 30 seconds
+			s = false
 		end
-
-		if not s and dashTouch then
-			s = true
-		end
+	else
+		ticks = 0
 	end
 
+	if not s and dashTouch then
+		s = true
+	end
+	--end
+
 	if shut and s then s = false end
-    output.setBool(1, s)
-	
+	output.setBool(1, s)
+
 	-- Script alive indicator
-    output.setNumber(1, math.random())
+	output.setNumber(1, math.random())
 end

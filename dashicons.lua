@@ -1,7 +1,9 @@
+---@diagnostic disable: undefined-global
+---@diagnostic disable: undefined-field
 --dashicons
 -- Author: SentyFunBall
 -- GitHub: https://github.com/SentyFunBall
--- Workshop: 
+-- Workshop:
 
 --Code by STCorp. Do not reuse.--
 --- Developed using LifeBoatAPI - Stormworks Lua plugin for VSCode - https://code.visualstudio.com/download (search "Stormworks Lua with LifeboatAPI" extension)
@@ -26,7 +28,6 @@ do
     ---@param simulator Simulator Use simulator:<function>() to set inputs etc.
     ---@param ticks     number Number of ticks since simulator started
     function onLBSimulatorTick(simulator, ticks)
-
         -- touchscreen defaults
         simulator:setInputBool(1, simulator:getIsToggled(1))
         simulator:setInputBool(2, simulator:getIsToggled(2))
@@ -52,7 +53,7 @@ local warning = false
 local ticks = 0
 local fuelCollected = false
 local maxfuel = 180
-local fuelwarn = property.getNumber("Fuel Warn %")/100
+local fuelwarn = property.getNumber("Fuel Warn %") / 100
 local tempwarn = property.getNumber("Temp Warn")
 local isEv = property.getBool("EV Mode (Do not change)")
 
@@ -82,12 +83,12 @@ function onTick()
 
     --input theme
     for i = 1, 9 do
-        row = math.ceil(i/3)
+        row = math.ceil(i / 3)
         if not theme[row] then theme[row] = {} end
-        theme[row][(i-1)%3+1] = input.getNumber(i+23)
+        theme[row][(i - 1) % 3 + 1] = input.getNumber(i + 23)
     end
     if theme[1][1] == 0 then --fallback
-        theme = {{47,51,78}, {86,67,143}, {128,95,164}}
+        theme = { { 47, 51, 78 }, { 86, 67, 143 }, { 128, 95, 164 } }
     end
 
     if not fuelCollected then
@@ -106,7 +107,7 @@ function onTick()
     else
         warning = false
     end
-    
+
     -- Script alive indicator
     output.setNumber(1, math.random())
 end
@@ -119,18 +120,18 @@ function onDraw()
                 drawRBlinker(62, 24)
             elseif dashMode == 3 then -- round
                 drawRBlinker(60, 1)
-            else -- modern
+            else                      -- modern
                 drawRBlinker(60, 2)
             end
         end
-        
+
         if leftBlinker then
             c(45, 201, 55)
             if dashMode < 3 then
                 drawLBlinker(35, 24)
             elseif dashMode == 3 then -- round
                 drawLBlinker(37, 1)
-            else -- modern
+            else                      -- modern
                 drawLBlinker(37, 2)
             end
         end
@@ -140,17 +141,17 @@ function onDraw()
                 drawCruise(36, 26)
             elseif dashMode == 3 then -- round
                 drawCruise(75, 24)
-            else -- modern
+            else                      -- modern
                 drawCruise(80, 2)
             end
         end
-    
+
         if lightmode > 0 then
             if dashMode < 3 then
                 drawLights(34, 2)
             elseif dashMode == 3 then -- round
                 drawLights(18, 23)
-            else -- modern
+            else                      -- modern
                 drawLights(74, 2)
             end
         end
@@ -161,11 +162,11 @@ function onDraw()
                 drawWarning(47, 23)
             elseif dashMode == 3 then -- round
                 drawWarning(47, 18)
-            else -- modern
+            else                      -- modern
                 drawWarning(47, 23)
             end
         end
-        
+
         --- ESC warning
         if not esc then
             if dashMode < 3 then
@@ -180,7 +181,7 @@ function onDraw()
                 drawAP(63, 2)
             elseif dashMode == 3 then -- round
                 drawAP(4, 2)
-            else -- modern
+            else                      -- modern
                 drawAP(47, 12)
             end
         end
@@ -188,45 +189,45 @@ function onDraw()
 
     if fl or fr or rl or rr then
         c(theme[2][1], theme[2][2], theme[2][3], 250)
-        screen.drawRectF(39,3,18,26)
-        screen.drawLine(40,2,56,2)
-        screen.drawLine(57,4,57,28)
-        screen.drawLine(40,29,56,29)
-        screen.drawLine(38,4,38,28)
-        
+        screen.drawRectF(39, 3, 18, 26)
+        screen.drawLine(40, 2, 56, 2)
+        screen.drawLine(57, 4, 57, 28)
+        screen.drawLine(40, 29, 56, 29)
+        screen.drawLine(38, 4, 38, 28)
+
         c(theme[1][1], theme[1][2], theme[1][3], 250)
-        screen.drawRectF(44,5,8,4)
-        screen.drawRectF(45,14,6,6)
-        screen.drawLine(44,9,44,25)
-        screen.drawLine(51,9,51,25)
-        screen.drawLine(45,25,51,25)
-        
+        screen.drawRectF(44, 5, 8, 4)
+        screen.drawRectF(45, 14, 6, 6)
+        screen.drawLine(44, 9, 44, 25)
+        screen.drawLine(51, 9, 51, 25)
+        screen.drawLine(45, 25, 51, 25)
+
         if fl then
-            screen.drawLine(40,15,44,11)
+            screen.drawLine(40, 15, 44, 11)
         end
-        
+
         if fr then
-            screen.drawLine(55,15,51,11)
+            screen.drawLine(55, 15, 51, 11)
         end
 
         if rl then
-            screen.drawLine(41,21,44,18)
+            screen.drawLine(41, 21, 44, 18)
         end
 
         if rr then
-            screen.drawLine(54,21,51,18)
+            screen.drawLine(54, 21, 51, 18)
         end
     end
 
     if lock then
-        c(200,50,50)
-        screen.drawRectF(45,4,7,4)
-        screen.drawRectF(46,2,1,2)
-        screen.drawRectF(47,1,3,1)
-        screen.drawRectF(50,2,1,3)
+        c(200, 50, 50)
+        screen.drawRectF(45, 4, 7, 4)
+        screen.drawRectF(46, 2, 1, 2)
+        screen.drawRectF(47, 1, 3, 1)
+        screen.drawRectF(50, 2, 1, 3)
     end
 
-    if scriptcrash then -- compact bottom-center alert
+    if scriptcrash then                     -- compact bottom-center alert
         local bx, by, bw, bh = 44, 23, 9, 9 -- centered on 96x32
 
         -- red rounded rectangle (pixel-rounded corners)
@@ -236,19 +237,20 @@ function onDraw()
         screen.drawRectF(bx + bw - 1, by + 1, 1, bh - 2)
 
         c(200, 200, 200)
-        screen.drawRectF(45,29,7,1)
-        screen.drawRectF(46,27,5,2)
-        screen.drawRectF(47,25,3,2)
-        screen.drawRectF(48,24,1,1)
+        screen.drawRectF(45, 29, 7, 1)
+        screen.drawRectF(46, 27, 5, 2)
+        screen.drawRectF(47, 25, 3, 2)
+        screen.drawRectF(48, 24, 1, 1)
         c(200, 50, 50)
-        screen.drawRectF(48,25,1,2)
-        screen.drawRectF(48,28,1,1)
+        screen.drawRectF(48, 25, 1, 2)
+        screen.drawRectF(48, 28, 1, 1)
     end
 end
 
-function c(...) local _={...}
-    for i,v in pairs(_) do
-     _[i]=_[i]^2.2/255^2.2*_[i]
+function c(...)
+    local _ = { ... }
+    for i, v in pairs(_) do
+        _[i] = _[i] ^ 2.2 / 255 ^ 2.2 * _[i]
     end
     screen.setColor(table.unpack(_))
 end
@@ -284,7 +286,7 @@ end
 
 function drawLights(x, y)
     if lightmode == 1 then --low
-        c(96,190,112)
+        c(96, 190, 112)
         screen.drawRectF(x, y, 3, 5)
         screen.drawLine(x + 3, y + 1, x + 3, y + 4)
 

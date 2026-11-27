@@ -1,6 +1,8 @@
+---@diagnostic disable: undefined-global
+---@diagnostic disable: undefined-field
 -- Author: SentyFunBall
 -- GitHub: https://github.com/SentyFunBall
--- Workshop: 
+-- Workshop:
 
 --Code by STCorp. Do not reuse.--
 --- Developed using LifeBoatAPI - Stormworks Lua plugin for VSCode - https://code.visualstudio.com/download (search "Stormworks Lua with LifeboatAPI" extension)
@@ -26,7 +28,6 @@ do
     ---@param simulator Simulator Use simulator:<function>() to set inputs etc.
     ---@param ticks     number Number of ticks since simulator started
     function onLBSimulatorTick(simulator, ticks)
-
         -- touchscreen defaults
         local screenConnection = simulator:getTouchScreen(1)
         local screenConnection2 = simulator:getTouchScreen(2)
@@ -38,11 +39,11 @@ do
         simulator:setInputNumber(4, screenConnection2.touchY)
 
         -- NEW! button/slider options from the UI
-        simulator:setInputBool(31, simulator:getIsClicked(1))       -- if button 1 is clicked, provide an ON pulse for input.getBool(31)
-        simulator:setInputNumber(31, simulator:getSlider(1))        -- set input 31 to the value of slider 1
+        simulator:setInputBool(31, simulator:getIsClicked(1))     -- if button 1 is clicked, provide an ON pulse for input.getBool(31)
+        simulator:setInputNumber(31, simulator:getSlider(1))      -- set input 31 to the value of slider 1
 
-        simulator:setInputBool(32, simulator:getIsToggled(2))       -- make button 2 a toggle, for input.getBool(32)
-        simulator:setInputNumber(32, simulator:getSlider(2) * 50)   -- set input 32 to the value from slider 2 * 50
+        simulator:setInputBool(32, simulator:getIsToggled(2))     -- make button 2 a toggle, for input.getBool(32)
+        simulator:setInputNumber(32, simulator:getSlider(2) * 50) -- set input 32 to the value from slider 2 * 50
     end;
 end
 ---@endsection
@@ -54,14 +55,14 @@ end
 -- the "LifeBoatAPI" is included by default in /_build/libs/ - you can use require("LifeBoatAPI") to get this, and use all the LifeBoatAPI.<functions>!
 
 -- Constants
-local COLOR_X = {65, 67, 125}     -- Blue for X
-local COLOR_O = {163, 96, 75}     -- Red for O  
-local COLOR_WHITE = {200, 200, 200} -- White text
-local COLOR_GREEN = {0, 255, 0}   -- Green for sync
+local COLOR_X = { 65, 67, 125 }     -- Blue for X
+local COLOR_O = { 163, 96, 75 }     -- Red for O
+local COLOR_WHITE = { 200, 200, 200 } -- White text
+local COLOR_GREEN = { 0, 255, 0 }   -- Green for sync
 
-local screenNum = 0 -- 0 = L, 1 = R
+local screenNum = 0                 -- 0 = L, 1 = R
 local s = screen
-local turn = { false, false } -- for each board. false = X, true = O
+local turn = { false, false }       -- for each board. false = X, true = O
 local canMp = false
 local down = false
 local down2 = false
@@ -69,16 +70,16 @@ local isMp = false
 
 local states = { 1, 1 } -- for each board. 0 = reset 1 = playing SP 2 = waiting for MP 3 = is my MP turn 4 = waiting on other player 5 = game over
 
-local mapL = { -- 0 = empty, 1 = X, 2 = O
-	{ 0, 0, 0 },
-	{ 0, 0, 0 },
-	{ 0, 0, 0 }
+local mapL = {          -- 0 = empty, 1 = X, 2 = O
+    { 0, 0, 0 },
+    { 0, 0, 0 },
+    { 0, 0, 0 }
 }
 
 local mapR = {
-	{ 0, 0, 0 },
-	{ 0, 0, 0 },
-	{ 0, 0, 0 }
+    { 0, 0, 0 },
+    { 0, 0, 0 },
+    { 0, 0, 0 }
 }
 
 -- Helper functions
@@ -113,14 +114,14 @@ local function drawTurnIndicator(isOTurn, x, y, w, h)
 end
 
 function onTick()
-	if screenNum == 2 then
-		canMp = true
-	else
-		canMp = false
-	end
-	
-	screenNum = 0
-	
+    if screenNum == 2 then
+        canMp = true
+    else
+        canMp = false
+    end
+
+    screenNum = 0
+
     if states[1] == 0 then -- reset L
         states[1] = 1
         clearBoard(mapL)
@@ -129,31 +130,31 @@ function onTick()
         states[2] = 1
         clearBoard(mapR)
     end
-    
+
     if not isMp and (states[1] == 3 or states[3] == 4 or states[2] == 3 or states[2] == 4) then
         turn[1] = false
         turn[2] = false
 
         states[1], states[2] = 0, 0
     end
-	
-	pressR = input.getBool(1) and not down
-	down = input.getBool(1)
-	pressL = input.getBool(2) and not down2
-	down2 = input.getBool(2)
-	
-	pxR = input.getNumber(3)
-	pyR = input.getNumber(4)
-	
-	pxL = input.getNumber(1)
-	pyL = input.getNumber(2)
-	
+
+    pressR = input.getBool(1) and not down
+    down = input.getBool(1)
+    pressL = input.getBool(2) and not down2
+    down2 = input.getBool(2)
+
+    pxR = input.getNumber(3)
+    pyR = input.getNumber(4)
+
+    pxL = input.getNumber(1)
+    pyL = input.getNumber(2)
+
     if states[1] == 1 and turn[1] then
         aiMakeMove(mapL)
         turn[1] = not turn[1]
         if checkWinner(mapL) > 0 or isFull(mapL) then states[1] = 5 end
     end
-    
+
     if states[2] == 1 and turn[2] then
         aiMakeMove(mapR)
         turn[2] = not turn[2]
@@ -162,30 +163,30 @@ function onTick()
 
     if states[1] == 2 and states[2] == 2 then --start mp
         isMp = true
-        clearBoard(mapL) -- mp uses left board for both players
+        clearBoard(mapL)                      -- mp uses left board for both players
         states[1] = 3
         states[2] = 4
     end
-	
+
     if pressL or (pressR and not canMp) then
         if (pressR and not canMp) then
             -- right screen acting as left screen
             pxL = pxR
             pyL = pyR
         end
-		if states[1] == 1 or states[1] == 3 then -- play
-			local sq = getTouchedSquare(pxL, pyL)
-			if sq ~= -1 then
-				local y = math.floor(sq / 3) + 1
-				local x = (sq % 3 + 1)
-				
+        if states[1] == 1 or states[1] == 3 then -- play
+            local sq = getTouchedSquare(pxL, pyL)
+            if sq ~= -1 then
+                local y = math.floor(sq / 3) + 1
+                local x = (sq % 3 + 1)
+
                 if mapL[x][y] == 0 then
                     if states[1] == 3 then --mp
                         states[1] = 4
                         states[2] = 3
                     end
-					mapL[x][y] = turn[1] and 2 or 1
-					turn[1] = not turn[1]
+                    mapL[x][y] = turn[1] and 2 or 1
+                    turn[1] = not turn[1]
 
                     -- Single winner check after move
                     local winner = checkWinner(mapL)
@@ -193,29 +194,29 @@ function onTick()
                         states[1] = 5
                         if isMp then states[2] = 5 end -- End game for both players in MP mode
                     end
-				end
-			end
-		end
-		
-		if isPointInRectangle(pxL, pyL, 4, 4, 6, 7) and (states[1] == 1 or states[1] == 5)then --reset button
-			if isMp then
-				-- Reset MP game for both players but stay in MP mode
-				states[1] = 2
-				states[2] = 2
-			else
-				states[1] = 0
-			end
-		end 
-		
-		if isPointInRectangle(pxL, pyL, 55, 4, 6, 7) and canMp then --mp button
+                end
+            end
+        end
+
+        if isPointInRectangle(pxL, pyL, 4, 4, 6, 7) and (states[1] == 1 or states[1] == 5) then --reset button
+            if isMp then
+                -- Reset MP game for both players but stay in MP mode
+                states[1] = 2
+                states[2] = 2
+            else
+                states[1] = 0
+            end
+        end
+
+        if isPointInRectangle(pxL, pyL, 55, 4, 6, 7) and canMp then --mp button
             states[1] = isMp and 1 or 2
             if states[1] == 1 then
                 isMp = false
             end
-		end
-	end
-	
-	if pressR and canMp then --canMp also means the second monitor is on
+        end
+    end
+
+    if pressR and canMp then                     --canMp also means the second monitor is on
         if states[2] == 1 or states[2] == 3 then -- playing
             local sq = getTouchedSquare(pxR, pyR)
             local board = isMp and mapL or mapR
@@ -233,7 +234,7 @@ function onTick()
                         turn[2] = not turn[2]
                     end
                     board[x][y] = realTurn and 2 or 1
-    
+
                     -- Single winner check after move
                     local winner = checkWinner(board)
                     if winner > 0 or isFull(board) then
@@ -242,25 +243,25 @@ function onTick()
                     end
                 end
             end
-		end
+        end
 
-		if isPointInRectangle(pxR, pyR, 4, 4, 6, 7) and (states[2] == 1 or states[2] == 5)then --reset button
-			if isMp then
-				-- Reset MP game for both players but stay in MP mode
-				states[1] = 2
-				states[2] = 2
-			else
-				states[2] = 0
-			end
-		end 
-		
-		if isPointInRectangle(pxR, pyR, 55, 4, 6, 7) then --mp button
-			states[2] = isMp and 1 or 2
+        if isPointInRectangle(pxR, pyR, 4, 4, 6, 7) and (states[2] == 1 or states[2] == 5) then --reset button
+            if isMp then
+                -- Reset MP game for both players but stay in MP mode
+                states[1] = 2
+                states[2] = 2
+            else
+                states[2] = 0
+            end
+        end
+
+        if isPointInRectangle(pxR, pyR, 55, 4, 6, 7) then --mp button
+            states[2] = isMp and 1 or 2
 
             if states[2] == 1 then
                 isMp = false
             end
-		end
+        end
     end
 end
 
@@ -280,35 +281,35 @@ local function drawBoard(board)
 end
 
 function onDraw()
-	-- draw board and buttons regardless of display
-	
-	c(117, 100, 75)
-	s.drawClear()
-	
-	c(94, 94, 94)
-	s.drawRect(2, 2, 60, 60)
-	
-	s.drawLine(22,7,22,57)
-	s.drawLine(39,7,39,57)
-	s.drawLine(7,23,56,23)
-	s.drawLine(7,39,56,39)
-		
-	s.drawRectF(4, 4, 6, 7)
-	
-	if canMp then
-		s.drawRectF(55, 4, 6, 7)
-	end
-	
-	c(COLOR_WHITE)
-	s.drawText(5, 5, "R")
+    -- draw board and buttons regardless of display
 
-	if screenNum == 1 then -- First screen (always left in dual mode, or single screen in single mode)
-		screenNum = screenNum + 1
-		
-		-- In single screen mode, show left screen content
-		-- In dual screen mode, this is the left screen
-		drawBoard(mapL)
-		
+    c(117, 100, 75)
+    s.drawClear()
+
+    c(94, 94, 94)
+    s.drawRect(2, 2, 60, 60)
+
+    s.drawLine(22, 7, 22, 57)
+    s.drawLine(39, 7, 39, 57)
+    s.drawLine(7, 23, 56, 23)
+    s.drawLine(7, 39, 56, 39)
+
+    s.drawRectF(4, 4, 6, 7)
+
+    if canMp then
+        s.drawRectF(55, 4, 6, 7)
+    end
+
+    c(COLOR_WHITE)
+    s.drawText(5, 5, "R")
+
+    if screenNum == 1 then -- First screen (always left in dual mode, or single screen in single mode)
+        screenNum = screenNum + 1
+
+        -- In single screen mode, show left screen content
+        -- In dual screen mode, this is the left screen
+        drawBoard(mapL)
+
         if states[1] == 5 then
             drawGameResult(checkWinner(mapL), 0, 4, 64, 6)
         elseif states[1] == 2 then
@@ -317,7 +318,7 @@ function onDraw()
         else
             drawTurnIndicator(turn[1], 0, 57, 64, 6)
         end
-        
+
         if states[1] == 1 and canMp then
             c(COLOR_WHITE)
             s.drawText(56, 5, "M")
@@ -325,14 +326,14 @@ function onDraw()
             c(COLOR_GREEN)
             s.drawText(56, 5, "S")
         end
-	else -- Second screen (only exists in dual mode)
-		screenNum = screenNum + 1
+    else -- Second screen (only exists in dual mode)
+        screenNum = screenNum + 1
 
         local board = isMp and mapL or mapR
         local realTurn = isMp and turn[1] or turn[2]
-        
+
         drawBoard(board)
-        
+
         if states[2] == 5 then
             drawGameResult(checkWinner(board), 0, 4, 64, 6)
         elseif states[2] == 2 then
@@ -341,71 +342,71 @@ function onDraw()
         else
             drawTurnIndicator(realTurn, 0, 57, 64, 6)
         end
-		
-		if states[2] == 1 and canMp then
+
+        if states[2] == 1 and canMp then
             c(COLOR_WHITE)
             s.drawText(56, 5, "M")
         elseif isMp then
             c(COLOR_GREEN)
             s.drawText(56, 5, "S")
         end
-	end
+    end
 end
 
 function c(...)
-    local args = {...}
+    local args = { ... }
     if type(args[1]) == "table" then
-        args = {args[1][1], args[1][2], args[1][3]}
+        args = { args[1][1], args[1][2], args[1][3] }
     end
 
     for i, v in pairs(args) do
-        args[i] = v^2.2/255^2.2*v
+        args[i] = v ^ 2.2 / 255 ^ 2.2 * v
     end
 
     screen.setColor(table.unpack(args))
 end
 
 function isPointInRectangle(x, y, rectX, rectY, rectW, rectH)
-	return x > rectX and y > rectY and x < rectX+rectW and y < rectY+rectH
+    return x > rectX and y > rectY and x < rectX + rectW and y < rectY + rectH
 end
 
 local lines = { --cache for tryComplete
     -- rows
-    {{1,1},{1,2},{1,3}},
-    {{2,1},{2,2},{2,3}},
-    {{3,1},{3,2},{3,3}},
+    { { 1, 1 }, { 1, 2 }, { 1, 3 } },
+    { { 2, 1 }, { 2, 2 }, { 2, 3 } },
+    { { 3, 1 }, { 3, 2 }, { 3, 3 } },
     -- cols
-    {{1,1},{2,1},{3,1}},
-    {{1,2},{2,2},{3,2}},
-    {{1,3},{2,3},{3,3}},
+    { { 1, 1 }, { 2, 1 }, { 3, 1 } },
+    { { 1, 2 }, { 2, 2 }, { 3, 2 } },
+    { { 1, 3 }, { 2, 3 }, { 3, 3 } },
     -- diagonals
-    {{1,1},{2,2},{3,3}},
-    {{1,3},{2,2},{3,1}},
+    { { 1, 1 }, { 2, 2 }, { 3, 3 } },
+    { { 1, 3 }, { 2, 2 }, { 3, 1 } },
 }
 
 function drawX(x, y)
-screen.drawLine(3+x,4+y,12+x,13+y)
-screen.drawLine(3+x,12+y,12+x,3+y)
+    screen.drawLine(3 + x, 4 + y, 12 + x, 13 + y)
+    screen.drawLine(3 + x, 12 + y, 12 + x, 3 + y)
 end
 
 function drawO(x, y)
-screen.drawCircle(7+x,8+y,5)
+    screen.drawCircle(7 + x, 8 + y, 5)
 end
 
 function getTouchedSquare(x, y)
-	x = x - 7
-	y = y - 7
-	
-	if x < 0 or y < 0 then return -1 end
-	
-	local col = math.floor(x / 16) --x / cellw
-	local row = math.floor(y / 16) --y / cellh
-	
-	if col < 0 or col > 2 or row < 0 or row > 2 then return -1 end
-	
-	return row * 3 + col
+    x = x - 7
+    y = y - 7
+
+    if x < 0 or y < 0 then return -1 end
+
+    local col = math.floor(x / 16) --x / cellw
+    local row = math.floor(y / 16) --y / cellh
+
+    if col < 0 or col > 2 or row < 0 or row > 2 then return -1 end
+
+    return row * 3 + col
 end
-	
+
 -- game functions
 
 -- returns 1 if X won, 2 if O won
@@ -447,14 +448,14 @@ function tryComplete(target, board) -- target = 2 to win, 1 to block
         local nT, n0 = 0, 0
         local empty = nil
 
-        for i=1,3 do
-            local r,c = line[i][1], line[i][2]
+        for i = 1, 3 do
+            local r, c = line[i][1], line[i][2]
             local v = board[r][c]
-            if v == target then 
+            if v == target then
                 nT = nT + 1
-            elseif v == 0 then 
-				n0 = n0 + 1
-				empty = {r,c}
+            elseif v == 0 then
+                n0 = n0 + 1
+                empty = { r, c }
             end
         end
 
@@ -474,19 +475,28 @@ function aiMakeMove(board)
     if tryComplete(1, board) then return end
 
     -- 3. Take center
-    if board[2][2] == 0 then board[2][2] = 2 return end
+    if board[2][2] == 0 then
+        board[2][2] = 2
+        return
+    end
 
     -- 4. Corners
-    local corners = {{1,1},{1,3},{3,1},{3,3}}
-    for _,pos in ipairs(corners) do
-        local r,c = pos[1],pos[2]
-        if board[r][c] == 0 then board[r][c] = 2 return end
+    local corners = { { 1, 1 }, { 1, 3 }, { 3, 1 }, { 3, 3 } }
+    for _, pos in ipairs(corners) do
+        local r, c = pos[1], pos[2]
+        if board[r][c] == 0 then
+            board[r][c] = 2
+            return
+        end
     end
 
     -- 5. Edges
-    local edges = {{1,2},{2,1},{2,3},{3,2}}
-    for _,pos in ipairs(edges) do
-        local r,c = pos[1],pos[2]
-        if board[r][c] == 0 then board[r][c] = 2 return end
+    local edges = { { 1, 2 }, { 2, 1 }, { 2, 3 }, { 3, 2 } }
+    for _, pos in ipairs(edges) do
+        local r, c = pos[1], pos[2]
+        if board[r][c] == 0 then
+            board[r][c] = 2
+            return
+        end
     end
 end

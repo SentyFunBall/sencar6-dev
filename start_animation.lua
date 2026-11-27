@@ -1,7 +1,9 @@
+---@diagnostic disable: undefined-global
+---@diagnostic disable: undefined-field
 --start_animation
 -- Author: SentyFunBall
 -- GitHub: https://github.com/SentyFunBall
--- Workshop: 
+-- Workshop:
 
 --Code by STCorp. Do not reuse.--
 --- Developed using LifeBoatAPI - Stormworks Lua plugin for VSCode - https://code.visualstudio.com/download (search "Stormworks Lua with LifeboatAPI" extension)
@@ -27,7 +29,6 @@ do
     ---@param simulator Simulator Use simulator:<function>() to set inputs etc.
     ---@param ticks     number Number of ticks since simulator started
     function onLBSimulatorTick(simulator, ticks)
-
         -- touchscreen defaults
         local screenConnection = simulator:getTouchScreen(1)
         simulator:setInputBool(1, simulator:getIsToggled(1))
@@ -51,12 +52,12 @@ function onTick()
 
     --input theme
     for i = 1, 9 do
-        row = math.ceil(i/3)
+        row = math.ceil(i / 3)
         if not theme[row] then theme[row] = {} end
-        theme[row][(i-1)%3+1] = input.getNumber(i+23)
+        theme[row][(i - 1) % 3 + 1] = input.getNumber(i + 23)
     end
     if theme[1][1] == 0 then --fallback
-        theme = {{47,51,78}, {86,67,143}, {128,95,164}}
+        theme = { { 47, 51, 78 }, { 86, 67, 143 }, { 128, 95, 164 } }
     end
 
     if acc then
@@ -84,20 +85,21 @@ end
 function onDraw()
     if acc and ticks < 155 then
         drawGradient(ticks)
-        alpha = lerp(0, 220, ticks/160)
+        alpha = lerp(0, 220, ticks / 160)
         c(theme[2][1], theme[2][2], theme[2][3], alpha)
         screen.drawRectF(0, 0, 96, 32)
 
         if ticks > 20 then
-            screen.setColor(255,255,255,lerp(0,255,(clamp(ticks-20,0,40))/40))
+            screen.setColor(255, 255, 255, lerp(0, 255, (clamp(ticks - 20, 0, 40)) / 40))
             drawLogo()
         end
     end
 end
 
-function c(...) local _={...}
-    for i,v in pairs(_) do
-     _[i]=_[i]^2.2/255^2.2*_[i]
+function c(...)
+    local _ = { ... }
+    for i, v in pairs(_) do
+        _[i] = _[i] ^ 2.2 / 255 ^ 2.2 * _[i]
     end
     screen.setColor(table.unpack(_))
 end

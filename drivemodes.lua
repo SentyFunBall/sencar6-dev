@@ -1,3 +1,5 @@
+---@diagnostic disable: undefined-global
+---@diagnostic disable: undefined-field
 --drivemodes
 -- Author: SentyFunBall
 -- GitHub: https://github.com/SentyFunBall
@@ -26,7 +28,6 @@ do
     ---@param simulator Simulator Use simulator:<function>() to set inputs etc.
     ---@param ticks     number Number of ticks since simulator started
     function onLBSimulatorTick(simulator, ticks)
-
         -- touchscreen defaults
         local screenConnection = simulator:getTouchScreen(1)
         simulator:setInputBool(1, screenConnection.isTouched)
@@ -36,11 +37,11 @@ do
         simulator:setInputNumber(4, screenConnection.touchY)
 
         -- NEW! button/slider options from the UI
-        simulator:setInputBool(31, simulator:getIsClicked(1))       -- if button 1 is clicked, provide an ON pulse for input.getBool(31)
-        simulator:setInputNumber(31, simulator:getSlider(1))        -- set input 31 to the value of slider 1
+        simulator:setInputBool(31, simulator:getIsClicked(1))     -- if button 1 is clicked, provide an ON pulse for input.getBool(31)
+        simulator:setInputNumber(31, simulator:getSlider(1))      -- set input 31 to the value of slider 1
 
-        simulator:setInputBool(32, simulator:getIsToggled(2))       -- make button 2 a toggle, for input.getBool(32)
-        simulator:setInputNumber(32, simulator:getSlider(2) * 50)   -- set input 32 to the value from slider 2 * 50
+        simulator:setInputBool(32, simulator:getIsToggled(2))     -- make button 2 a toggle, for input.getBool(32)
+        simulator:setInputNumber(32, simulator:getSlider(2) * 50) -- set input 32 to the value from slider 2 * 50
     end;
 end
 ---@endsection
@@ -52,22 +53,22 @@ end
 -- the "LifeBoatAPI" is included by default in /_build/libs/ - you can use require("LifeBoatAPI") to get this, and use all the LifeBoatAPI.<functions>!
 
 function onTick()
-    if input.getBool(3) then --eco
+    if input.getBool(3) then     --eco
         output.setNumber(1, 1)
-        output.setNumber(2, -3) --upshift rps
-        output.setNumber(3, -3) --downshift rps
+        output.setNumber(2, -3)  --upshift rps
+        output.setNumber(3, -3)  --downshift rps
     elseif input.getBool(4) then --sport
         output.setNumber(1, 2)
-        output.setNumber(2, 2) --upshift rps
-        output.setNumber(3, 2) --downshift rps
+        output.setNumber(2, 2)   --upshift rps
+        output.setNumber(3, 2)   --downshift rps
     elseif input.getBool(5) then --tow
         output.setNumber(1, 3)
-        output.setNumber(2, 4) --upshift rps
-        output.setNumber(3, 2) --downshift rps
+        output.setNumber(2, 4)   --upshift rps
+        output.setNumber(3, 2)   --downshift rps
     elseif input.getBool(6) then --dac
         output.setNumber(1, 4)
-        output.setNumber(2, 4) --upshift rps
-        output.setNumber(3, 0) --downshift rps
+        output.setNumber(2, 4)   --upshift rps
+        output.setNumber(3, 0)   --downshift rps
     else
         output.setNumber(1, 0)
         output.setNumber(2, 0) --upshift rps

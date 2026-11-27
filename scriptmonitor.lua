@@ -1,6 +1,8 @@
+---@diagnostic disable: undefined-global
+---@diagnostic disable: undefined-field
 -- Author: SentyFunBall
 -- GitHub: https://github.com/SentyFunBall
--- Workshop: 
+-- Workshop:
 
 --Code by STCorp. Do not reuse.--
 --- Developed using LifeBoatAPI - Stormworks Lua plugin for VSCode - https://code.visualstudio.com/download (search "Stormworks Lua with LifeboatAPI" extension)
@@ -25,7 +27,6 @@ do
     ---@param simulator Simulator Use simulator:<function>() to set inputs etc.
     ---@param ticks     number Number of ticks since simulator started
     function onLBSimulatorTick(simulator, ticks)
-
         -- touchscreen defaults
         local screenConnection = simulator:getTouchScreen(1)
         simulator:setInputBool(1, screenConnection.isTouched)
@@ -35,11 +36,11 @@ do
         simulator:setInputNumber(4, screenConnection.touchY)
 
         -- NEW! button/slider options from the UI
-        simulator:setInputBool(31, simulator:getIsClicked(1))       -- if button 1 is clicked, provide an ON pulse for input.getBool(31)
-        simulator:setInputNumber(31, simulator:getSlider(1))        -- set input 31 to the value of slider 1
+        simulator:setInputBool(31, simulator:getIsClicked(1))     -- if button 1 is clicked, provide an ON pulse for input.getBool(31)
+        simulator:setInputNumber(31, simulator:getSlider(1))      -- set input 31 to the value of slider 1
 
-        simulator:setInputBool(32, simulator:getIsToggled(2))       -- make button 2 a toggle, for input.getBool(32)
-        simulator:setInputNumber(32, simulator:getSlider(2) * 50)   -- set input 32 to the value from slider 2 * 50
+        simulator:setInputBool(32, simulator:getIsToggled(2))     -- make button 2 a toggle, for input.getBool(32)
+        simulator:setInputNumber(32, simulator:getSlider(2) * 50) -- set input 32 to the value from slider 2 * 50
     end;
 end
 ---@endsection
@@ -69,6 +70,9 @@ local inputMap = {
     "ScriptVPedal",
     "MCExtras",
 }
+
+local disable = property.getBool("Disable SMM")
+
 local numInputs = 17
 
 local lastValues = {}
@@ -80,13 +84,17 @@ local time_since_last_trigger = 0
 local max_triggers = 2 -- Number of triggers before we assume the script is frozen and declare emergency
 local reset_time = 120 -- Time in ticks to before resetting triggers
 local active_issues = {}
-local reason = 0 -- 0 = none, 1 = wdt, 2 = trigger count
+local reason = 0       -- 0 = none, 1 = wdt, 2 = trigger count
 local crash_detected = false
 local bad_script = 0
 local firstTicks = 20
 local ticks = 0
 
 function onTick()
+    if disable then
+        return
+    end
+
     ticks = ticks + 1
     local reset = input.getBool(2)
     if reset or ticks % 3600 == 0 then -- reset every minute just in case, or if we get a reset signal
@@ -147,7 +155,7 @@ function onTick()
             end
         end
     end
-    
+
     if wdt > wdt_limit then reason = 1 end
     if triggers >= max_triggers then reason = 2 end
 

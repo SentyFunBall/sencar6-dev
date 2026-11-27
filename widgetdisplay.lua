@@ -1,3 +1,5 @@
+---@diagnostic disable: undefined-global
+---@diagnostic disable: undefined-field
 --widgetdisplay
 -- Author: SentyFunBall
 -- GitHub: https://github.com/SentyFunBall
@@ -26,7 +28,6 @@ do
     ---@param simulator Simulator Use simulator:<function>() to set inputs etc.
     ---@param ticks     number Number of ticks since simulator started
     function onLBSimulatorTick(simulator, ticks)
-
         -- touchscreen defaults
         local screenConnection = simulator:getTouchScreen(1)
         simulator:setInputBool(1, screenConnection.isTouched)
@@ -49,21 +50,25 @@ require("APIs.WidgetAPI")
 
 local theme = { { 47, 51, 78 }, { 86, 67, 143 }, { 128, 95, 164 } }
 
-local color = {133, 197, 230}
+local color = { 133, 197, 230 }
 
 --myWidget = {id = 0, drawn = false, {content = "Batt", x = 0, y = 0, [h = false, color = {100, 100, 100}]}, {content = 0, x = 0, y = 6, [h = false, color = {10, 10, 10}]}
-local batteryWidget = {id = 0, drawn = false, 
-    { content = "Battery",    x = 1, y = 1,  h = false, color = { 200, 200, 200 } },
-    { content = "Inst Use:",  x = 1, y = 8,  h = false, color = { 105, 190, 124 } },
-    { content = "Capacity:",  x = 1, y = 14, h = false, color = { 105, 190, 124 } },
-    { content = "Regen:",     x = 1, y = 20, h = false, color = { 105, 190, 124 } },
+local batteryWidget = {
+    id = 0,
+    drawn = false,
+    { content = "Battery",   x = 1, y = 1,  h = false, color = { 200, 200, 200 } },
+    { content = "Inst Use:", x = 1, y = 8,  h = false, color = { 105, 190, 124 } },
+    { content = "Capacity:", x = 1, y = 14, h = false, color = { 105, 190, 124 } },
+    { content = "Regen:",    x = 1, y = 20, h = false, color = { 105, 190, 124 } },
 }
 
-local weatherWidget = {id = 1, drawn = false,
-    { content = "Wthr",      x = 1, y = 1,  h = false, color = { 200, 200, 200 } },
-    { content = "Sunny",        x = 1, y = 8,  h = false, color = { 105, 190, 124 } },
-    { content = "Rng",  x = 1, y = 14, h = false, color = { 200, 200, 200 } },
-    { content = "0mi",         x = 1, y = 20, h = false, color = { 100, 100, 100 } },
+local weatherWidget = {
+    id = 1,
+    drawn = false,
+    { content = "Wthr",  x = 1, y = 1,  h = false, color = { 200, 200, 200 } },
+    { content = "Sunny", x = 1, y = 8,  h = false, color = { 105, 190, 124 } },
+    { content = "Rng",   x = 1, y = 14, h = false, color = { 200, 200, 200 } },
+    { content = "0mi",   x = 1, y = 20, h = false, color = { 100, 100, 100 } },
 }
 
 tick = 0
@@ -86,9 +91,9 @@ function onTick()
 
     -- load from inputs
     for i = 1, 9 do
-        local row = math.ceil(i/3)
-        local col = (i-1)%3+1
-        local value = input.getNumber(i+23)
+        local row = math.ceil(i / 3)
+        local col = (i - 1) % 3 + 1
+        local value = input.getNumber(i + 23)
         if value ~= 0 then
             if not theme[row] then theme[row] = {} end
             theme[row][col] = value
@@ -115,23 +120,23 @@ function onTick()
 
     if isHeavyPrecip and fog > 0.5 then
         conditions = isSnow and "Bliz" or "Storm"
-        color = isSnow and {207, 207, 207} or {86, 88, 89}
+        color = isSnow and { 207, 207, 207 } or { 86, 88, 89 }
     elseif isAnyPrecip then
         conditions = isSnow and "Snow" or "Rain"
-        color = isSnow and {204, 206, 207} or {141, 151, 158}
+        color = isSnow and { 204, 206, 207 } or { 141, 151, 158 }
     elseif isFoggy then
         if isDenselyFoggy then
             conditions = isSnow and "Fz fog" or "Fog"
-            color = isSnow and {106, 119, 125} or {90, 110, 120}
+            color = isSnow and { 106, 119, 125 } or { 90, 110, 120 }
         else
             conditions = isSnow and "Fz fog" or "Fog"
-            color = isSnow and {106, 119, 125} or {90, 110, 120}
+            color = isSnow and { 106, 119, 125 } or { 90, 110, 120 }
         end
     elseif isSnow then
-        conditions, color = "Cold", {165, 242, 243}
+        conditions, color = "Cold", { 165, 242, 243 }
     else
         conditions = "Clear"
-        color = {135, 206, 235}
+        color = { 135, 206, 235 }
     end
 
     -- Estimate range lost based on weather
@@ -145,12 +150,12 @@ function onTick()
         rangeLossFactor = rangeLossFactor - (isSnow and 0.2 or 0.05)
     end
     rangeLossFactor = math.max(110 * battery * rangeLossFactor, 0.0)
-    
+
     -- Update widgets
     if batteryWidget.drawn then
-        batteryWidget[2].content = string.format("Use:%.2fsw", insUse*60)
-        batteryWidget[3].content = string.format("Cap:%.1fKW", cap/1000)
-        batteryWidget[4].content = string.format("Rgn:%.0fsw", regen*2)
+        batteryWidget[2].content = string.format("Use:%.2fsw", insUse * 60)
+        batteryWidget[3].content = string.format("Cap:%.1fKW", cap / 1000)
+        batteryWidget[4].content = string.format("Rgn:%.0fsw", regen * 2)
     end
 
     if weatherWidget.drawn then
@@ -162,9 +167,9 @@ function onTick()
             weatherWidget[4].content = string.format("%.0fkm", rangeLossFactor * 1.60934)
         end
         if rangeLossFactor < 0.5 then
-            weatherWidget[4].color = {255, 100, 100}
+            weatherWidget[4].color = { 255, 100, 100 }
         else
-            weatherWidget[4].color = {100, 255, 100}
+            weatherWidget[4].color = { 100, 255, 100 }
         end
     end
 
@@ -183,31 +188,32 @@ function onDraw()
     if not acc then return end
 
     for i = 1, 32 do
-        c(lerp(theme[1][1], theme[2][1], i/32), lerp(theme[1][2], theme[2][2], i/32), lerp(theme[1][3], theme[2][3], i/32))
-        screen.drawRectF((i * 3)-3, 0, 3, 32)
+        c(lerp(theme[1][1], theme[2][1], i / 32), lerp(theme[1][2], theme[2][2], i / 32),
+            lerp(theme[1][3], theme[2][3], i / 32))
+        screen.drawRectF((i * 3) - 3, 0, 3, 32)
     end
-    
+
     -- draw(slot, large, widget, bgcolor)
     batteryWidget = WidgetAPI.draw(1, true, batteryWidget, { theme[2][1] + 15, theme[2][2] + 15, theme[2][3] + 15 })
     weatherWidget = WidgetAPI.draw(3, false, weatherWidget, { theme[2][1] + 15, theme[2][2] + 15, theme[2][3] + 15 })
-    
-    c(0,0,0,lerp(255, 1, tick))
+
+    c(0, 0, 0, lerp(255, 1, tick))
     screen.drawRectF(0, 0, 96, 32)
-    
+
     if useDimDisplay then
         screen.setColor(0, 0, 0, 150)
         screen.drawRectF(0, 0, 96, 32)
     end
-    
 end
 
-function c(...) local _={...}
-    for i,v in pairs(_) do
-     _[i]=_[i]^2.2/255^2.2*_[i]
+function c(...)
+    local _ = { ... }
+    for i, v in pairs(_) do
+        _[i] = _[i] ^ 2.2 / 255 ^ 2.2 * _[i]
     end
     screen.setColor(table.unpack(_))
 end
 
-function lerp(v0,v1,t)
-    return v1*t+v0*(1-t)
+function lerp(v0, v1, t)
+    return v1 * t + v0 * (1 - t)
 end
